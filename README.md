@@ -1,5 +1,7 @@
 # Algerian green hydrogen: export costs and security premiums under Strait of Hormuz disruptions
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24182547.svg)](https://doi.org/10.5281/zenodo.24182547)
+
 Replication code and Supplementary Material for:
 
 > Bousbia Laiche, R., Letaim, F., & Cuce, E. *Demand for Algerian green hydrogen in the context of geopolitical supply chain challenges: A case study on modelling export costs and security premiums under supply disruptions through the Strait of Hormuz.* (manuscript under review)
@@ -68,12 +70,14 @@ Public series are downloaded by `scripts/download_data.py` (GPR: Caldara & Iacov
 * Competitor results depend on the WACC betas and S0 gaps in `competitors.csv`, which are author assumptions; `table_S9_breakeven_sensitivity.csv` reports the break-evens for two values of the Algerian WACC beta.
 * The R and Stata scripts could not be executed in the build environment; record `sessionInfo()` / Stata version when running them.
 
-## Publishing (GitHub → Zenodo DOI)
+## Citation
 
-1. Create an empty public GitHub repository and push this folder.
-2. In Zenodo, log in with GitHub, enable the repository under *GitHub* settings.
-3. Create a GitHub release (e.g. `v1.0.0`); Zenodo archives it and mints a DOI using `.zenodo.json`.
-4. Insert the DOI in the manuscript's Data Availability statement and in `CITATION.cff`.
+Software archive (all versions, resolves to the latest): https://doi.org/10.5281/zenodo.24182547  
+Version v1.0.0: https://doi.org/10.5281/zenodo.24182548
+
+> Bousbia Laiche, R., Letaim, F., & Cuce, E. (2026). *Replication code and Supplementary Material: Algerian green hydrogen export costs and security premiums under Strait of Hormuz disruptions* (Version v1.0.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.24182548
+
+New GitHub releases are archived automatically by Zenodo as new versions under the same concept DOI.
 
 ## License
 

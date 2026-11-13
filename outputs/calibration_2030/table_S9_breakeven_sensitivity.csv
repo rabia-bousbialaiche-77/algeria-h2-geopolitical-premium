@@ -1,0 +1,11 @@
+algeria_wacc_beta,competitor,share_algeria_cheaper_at_S0,share_breakeven_within_S0_S3,breakeven_gpr_median,p05,p95
+1.0,Australia,0.0,0.0,,,
+1.0,Oman,0.0,1.0,0.395,0.299,0.564
+1.0,Chile,0.0,0.0,,,
+1.0,Morocco,1.0,1.0,0.0,0.0,0.0
+1.0,Egypt,0.495,1.0,0.001,0.0,0.219
+0.5,Australia,0.0,0.008,1.172,1.081,1.196
+0.5,Oman,0.0,1.0,0.174,0.11,0.25
+0.5,Chile,0.0,0.0,,,
+0.5,Morocco,1.0,1.0,0.0,0.0,0.0
+0.5,Egypt,0.495,1.0,0.0,0.0,0.037

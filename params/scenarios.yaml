@@ -1,0 +1,69 @@
+# ---------------------------------------------------------------------------
+# Escalation scenarios (manuscript Table 6) and route exposure.
+# gpr_change    : change in GPR relative to its historical mean (share).
+# wacc_uplift_pp: increase in the WACC of Algerian projects (percentage points).
+#                 Drawn from a triangular distribution with +/- spread around the
+#                 manuscript value.
+# war_risk_rate : additional war-risk premium (AP) for one 7-day transit of a
+#                 listed area, as a share of hull value.
+# probability   : expert-judgement weight (used only for probability-weighted
+#                 expectations; results are always reported per scenario).
+# ---------------------------------------------------------------------------
+
+wacc_uplift_spread: 0.25        # +/- 25% around the manuscript point value (AUTHOR ASSUMPTION)
+
+# Scaling of the Table 6 WACC uplift for Algerian projects in the competitor
+# comparison (competitors use wacc_beta in competitors.csv). 1.0 = the uplift in
+# Table 6 applies in full to Algeria. A sensitivity run with 0.5 is also reported.
+algeria_wacc_beta: 1.0
+
+scenarios:
+  S0:
+    label: "Baseline"
+    gpr_change: 0.0
+    wacc_uplift_pp: 0.0
+    war_risk_rate: {dist: fixed, value: 0.0005}
+    probability: 0.55
+    sources: "War-risk AP before the Red Sea crisis: 0.05% of hull value (Lin, 2025)."
+  S1:
+    label: "Moderate tension"
+    gpr_change: 0.25
+    wacc_uplift_pp: 1.2
+    war_risk_rate: {dist: triangular, low: 0.0010, mode: 0.0015, high: 0.0020}
+    probability: 0.25
+    sources: "GPR, WACC and probability: manuscript Table 6. War-risk AP: AUTHOR ASSUMPTION."
+  S1a:
+    label: "Red Sea model"
+    gpr_change: 0.375
+    wacc_uplift_pp: 1.5
+    war_risk_rate: {dist: triangular, low: 0.0070, mode: 0.0085, high: 0.0100}
+    probability: 0.10
+    sources: "War-risk AP 0.7-1.0% of hull value observed during the Red Sea crisis (Lin, 2025; Notteboom et al., 2024)."
+  S2:
+    label: "Partial closure"
+    gpr_change: 0.60
+    wacc_uplift_pp: 2.0
+    war_risk_rate: {dist: triangular, low: 0.010, mode: 0.015, high: 0.020}
+    probability: 0.07
+    sources: "GPR, WACC and probability: manuscript Table 6. War-risk AP: AUTHOR ASSUMPTION."
+  S3:
+    label: "Full blockade + conflict"
+    gpr_change: 1.20
+    wacc_uplift_pp: 2.8
+    war_risk_rate: {dist: triangular, low: 0.020, mode: 0.035, high: 0.050}
+    probability: 0.03
+    sources: "GPR, WACC and probability: manuscript Table 6. War-risk AP: AUTHOR ASSUMPTION."
+
+# Route exposure of Algerian exports -------------------------------------------
+# listed_periods  : number of 7-day war-risk periods charged per voyage.
+# spillover_share : share of the listed-area AP that is passed on to voyages
+#                   outside listed areas (regional/global repricing).
+algeria_routes:
+  pipeline:
+    listed_periods: 0
+    spillover_share: 0.0
+    note: "Pipeline (TransMed / prospective SoutH2): no maritime war-risk exposure."
+  ship:
+    listed_periods: 0
+    spillover_share: 0.0
+    note: "Ammonia shipping Algeria -> North Italy stays in the Mediterranean (no listed area). Set spillover_share > 0 to test regional repricing (AUTHOR ASSUMPTION)."

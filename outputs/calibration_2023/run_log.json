@@ -1,0 +1,11 @@
+{
+  "model_version": "1.0.0",
+  "calibration": "2023",
+  "production_file": "production.yaml",
+  "n_draws": 10000,
+  "seed": 20251113,
+  "timestamp_utc": "2026-11-13T01:01:02+00:00",
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "parameter_files_sha256": "c4c5158ac81edd7f99b50b9c577545bcb274ae23c391e747245362fd0d3e44ed"
+}

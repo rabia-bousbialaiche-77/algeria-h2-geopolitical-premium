@@ -1,0 +1,209 @@
+# ---------------------------------------------------------------------------
+# Production, transport and conversion parameters for the Algerian export
+# cost model (Supplementary Material, Section S3 and Table S2).
+#
+# Every entry carries:
+#   dist   : fixed | triangular | uniform
+#   value  : (fixed)            low/mode/high : (triangular)   low/high : (uniform)
+#   unit   : physical unit
+#   source : reference key (see docs/REFERENCES.md) or "physical constant"
+#   basis  : how the value was obtained. Entries marked AUTHOR ASSUMPTION
+#            are modelling choices that must be justified or replaced with a
+#            sourced value before submission.
+# Price basis: constant 2023 US dollars.
+# ---------------------------------------------------------------------------
+
+# --- Solar PV supply (southern Algeria) -------------------------------------
+pv_capex_usd_per_kw:
+  dist: triangular
+  low: 550
+  mode: 758
+  high: 950
+  unit: USD2023/kW
+  source: IRENA_2024
+  basis: "Mode = global weighted-average total installed cost of utility-scale PV commissioned in 2023 (IRENA, 2024). Bounds: AUTHOR ASSUMPTION."
+
+pv_fixed_om_usd_per_kw_yr:
+  dist: triangular
+  low: 9
+  mode: 12
+  high: 15
+  unit: USD2023/kW/yr
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION (about 1.6% of the PV capital cost per year)."
+
+pv_yield_kwh_per_kwp_yr:
+  dist: triangular
+  low: 1950
+  mode: 2120
+  high: 2250
+  unit: kWh/kWp/yr
+  source: BoudgheneStambouli_2012
+  basis: "Mode = 2650 kWh/m2/yr mean annual irradiation in the Saharan zone (Ministry of Energy data reported in Boudghene Stambouli et al., 2012) x performance ratio 0.80. Bounds: AUTHOR ASSUMPTION. Verify the page/table before submission."
+
+pv_lifetime_yr:
+  dist: fixed
+  value: 25
+  unit: yr
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION."
+
+# --- Electrolysis ------------------------------------------------------------
+el_capex_usd_per_kw:
+  dist: triangular
+  low: 750
+  mode: 1300
+  high: 2000
+  unit: USD/kW (installed)
+  source: IEA_2023
+  basis: "IEA (2023): installed alkaline/PEM systems of non-Chinese origin about USD 1,700-2,000/kW; Chinese alkaline systems about USD 750-1,300/kW. Mode: AUTHOR ASSUMPTION."
+
+el_fixed_om_share:
+  dist: fixed
+  value: 0.025
+  unit: share of CAPEX per yr
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION."
+
+el_lifetime_yr:
+  dist: fixed
+  value: 20
+  unit: yr
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION. Stack replacement is not modelled separately (limitation)."
+
+el_sec_kwh_per_kg:
+  dist: triangular
+  low: 50
+  mode: 53
+  high: 56
+  unit: kWh/kg H2
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION; to be confirmed against IRENA (2020) / Schmidt et al. (2017) before submission."
+
+el_to_pv_ratio:
+  dist: fixed
+  value: 0.70
+  unit: kW_el per kWp
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION (electrolyser undersized relative to PV to raise full-load hours)."
+
+clipping_loss:
+  dist: fixed
+  value: 0.03
+  unit: share of PV output
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION."
+
+# --- Water -----------------------------------------------------------------
+water_m3_per_kg:
+  dist: fixed
+  value: 0.035
+  unit: m3 desalinated water per kg H2
+  source: PtXHub_2024
+  basis: "PtX Hub (2024): about 35 kg of desalinated water per kg H2 including cooling."
+
+desal_cost_usd_per_m3:
+  dist: triangular
+  low: 0.6
+  mode: 1.0
+  high: 1.5
+  unit: USD/m3
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION; to be checked against Chahtou and Taoussi (2025)."
+
+# --- Cost of capital ---------------------------------------------------------
+wacc_base:
+  dist: triangular
+  low: 0.07
+  mode: 0.08
+  high: 0.09
+  unit: real, per yr
+  source: AUTHOR
+  basis: "Mode = 8% baseline stated in the manuscript (Section 1.2). Steffen (2020) documents higher cost of capital in developing countries. Bounds: AUTHOR ASSUMPTION."
+
+# --- Transport to Europe -----------------------------------------------------
+pipeline_transport_eur_per_mwh:
+  dist: triangular
+  low: 9
+  mode: 14
+  high: 19
+  unit: EUR/MWh (LHV)
+  source: Timmerberg_2019
+  basis: "Timmerberg and Kaltschmitt (2019): minimum transport cost 9 (low case) and 19 (high case) EUR/MWh for North African hydrogen blended into existing pipelines to Central Europe. Mode: midpoint."
+
+ship_chain_eur_per_kg:
+  dist: triangular
+  low: 5.49
+  mode: 5.90
+  high: 6.34
+  unit: EUR/kg H2
+  source: Restelli_2024
+  basis: "Restelli et al. (2024): ammonia value chain North Africa -> North Italy (synthesis, storage, maritime transport, distribution and cracking), industrial application, 5.49-6.34 EUR/kg."
+
+eur_usd:
+  dist: fixed
+  value: 1.08
+  unit: USD per EUR
+  source: AUTHOR
+  basis: "2023 annual average EUR/USD reference rate (approximately 1.08); confirm against the ECB series."
+
+lhv_kwh_per_kg:
+  dist: fixed
+  value: 33.33
+  unit: kWh/kg
+  source: physical constant
+  basis: "Lower heating value of hydrogen."
+
+# --- Vessel and cargo (used to convert war-risk premiums) -----------------------
+hull_value_usd:
+  dist: triangular
+  low: 110000000
+  mode: 125000000
+  high: 135000000
+  unit: USD
+  source: DNV_2024
+  basis: "DNV (2024): newbuilding price of a 93,000 m3 LPG/ammonia-capable carrier about USD 125 million in 2024. Bounds: AUTHOR ASSUMPTION."
+
+cargo_m3:
+  dist: fixed
+  value: 93000
+  unit: m3
+  source: DNV_2024
+  basis: "Very large ammonia carrier class (93,000 m3)."
+
+nh3_density_t_per_m3:
+  dist: fixed
+  value: 0.682
+  unit: t/m3
+  source: physical constant
+  basis: "Liquid ammonia at -33 C."
+
+cargo_fill:
+  dist: fixed
+  value: 0.98
+  unit: share
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION."
+
+h2_mass_fraction_nh3:
+  dist: fixed
+  value: 0.1776
+  unit: kg H2 per kg NH3
+  source: physical constant
+  basis: "Stoichiometry 3*1.008/17.031."
+
+# --- Carbon term ---------------------------------------------------------------
+embedded_emissions_kgco2_per_kg:
+  dist: fixed
+  value: 0.0
+  unit: kg CO2 per kg H2
+  source: AUTHOR
+  basis: "Direct embedded emissions of renewable electrolytic hydrogen set to zero (CBAM definitive regime from 1 January 2026; European Commission, n.d.-a). Change to test non-zero intensities."
+
+ets_price_eur_per_t:
+  dist: fixed
+  value: 80
+  unit: EUR/t CO2
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION; only used when embedded_emissions_kgco2_per_kg > 0."

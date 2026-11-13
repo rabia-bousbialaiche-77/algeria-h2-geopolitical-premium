@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+data/raw/*.xls
+data/raw/fred_*.csv
+data/raw/eu_ets.csv
+data/raw/financing_proxy.csv
+data/raw/cri.csv
+data/raw/download_log.json
+data/processed/
+outputs/econometrics/

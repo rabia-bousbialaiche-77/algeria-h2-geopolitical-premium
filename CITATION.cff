@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software and the article."
+title: "Replication code for: Demand for Algerian green hydrogen in the context of geopolitical supply chain challenges - export costs and security premiums under Strait of Hormuz disruptions"
+version: 1.0.0
+date-released: 2026-11-13
+license: MIT
+authors:
+  - family-names: Bousbia Laiche
+    given-names: Rabia
+    affiliation: "Faculty of Economic, Commercial and Management Sciences, University of El Oued, Algeria"
+    orcid: "https://orcid.org/0000-0002-0150-4310"
+  - family-names: Letaim
+    given-names: Fethi
+    affiliation: "Exact Sciences Faculty, University of El Oued, Algeria"
+  - family-names: Cuce
+    given-names: Erdem
+    affiliation: "Department of Mechanical Engineering, Recep Tayyip Erdogan University, Türkiye"
+keywords:
+  - green hydrogen
+  - geopolitical risk premium
+  - LCOH
+  - Monte Carlo simulation
+  - DCC-MIDAS-X
+  - TVP-VAR
+  - Algeria
+  - Strait of Hormuz

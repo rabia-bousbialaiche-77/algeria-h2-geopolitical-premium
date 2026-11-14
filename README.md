@@ -1,83 +1,69 @@
-# Algerian green hydrogen: export costs and security premiums under Strait of Hormuz disruptions
+# Pricing geopolitical risk into delivered green hydrogen costs (Algeria–EU, Strait of Hormuz)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24182547.svg)](https://doi.org/10.5281/zenodo.24182547)
 
-Replication code and Supplementary Material for:
+Replication code, data and Supplementary Material for:
 
-> Bousbia Laiche, R., Letaim, F., & Cuce, E. *Demand for Algerian green hydrogen in the context of geopolitical supply chain challenges: A case study on modelling export costs and security premiums under supply disruptions through the Strait of Hormuz.* (manuscript under review)
+> Bousbia Laiche, R., Letaim, F., & Cuce, E. *Pricing geopolitical risk into delivered green hydrogen costs: a route-explicit scenario framework for Algeria–EU supply tested on the 2026 Strait of Hormuz closure.* (manuscript submitted to the International Journal of Hydrogen Energy)
 
-The repository contains a transparent bottom-up model of the delivered cost of Algerian green hydrogen, the scenario Monte Carlo simulation, the competitor break-even analysis, and the econometric scripts (DCC-MIDAS-X, TVP-VAR frequency connectedness, mediation with sensitivity analysis, IV robustness checks). Every numerical input is stored in `params/` together with its source; inputs without an external source are explicitly marked **AUTHOR ASSUMPTION**.
+Version 2.0.0 replaces the econometric design of v1.0.0 with a calibrated scenario framework. The model is a deterministic, route-explicit delivered-cost model for hydrogen supplied to the EU from Algeria (pipeline and ammonia) and from Morocco, Egypt, Oman, Australia and Chile (ammonia). It prices two shock channels, project financing (C1) and war-risk insurance with rerouting (C2), propagates parameter uncertainty with a 10,000-draw Monte Carlo simulation (seed 20251113, common random numbers), and tests the ex-ante scenarios against the observed 2026 Strait of Hormuz closure.
 
 ## Quick start
 
 ```bash
 pip install -r requirements.txt
-python src/mcc_simulation.py --calibration 2023      # current (2023) sourced costs
-python src/mcc_simulation.py --calibration 2030      # 2030 electrolyser-cost projection
-python -m pytest -q                                   # 12 unit tests
+python src/run_model.py --calibration 2023      # tables, figures, Sobol indices, run log
+python src/run_model.py --calibration 2030      # 2030 electrolyser cost
+pytest tests
 ```
 
-A full run (10,000 draws, five scenarios, two routes, five competitors) takes about one second. Each run writes `outputs/calibration_<year>/run_log.json` with the seed, the number of draws, software versions and the SHA-256 hash of all parameter files.
+Outputs are written to `outputs/calibration_<year>/`. A full 2023 run takes well under a minute.
 
 ## Repository structure
 
 ```
-params/
-  production.yaml          techno-economic, transport and vessel parameters (2023 costs)
-  production_2030.yaml     same, with the 2030 electrolyser-cost projection
-  scenarios.yaml           S0, S1, S1a, S2, S3 (manuscript Table 6) and route exposure
-  competitors.csv          competitor cost gaps, WACC betas and route exposure
-  data_dictionary.csv      every variable: definition, unit, frequency, source, status
-src/
-  h2risk/cost_model.py     Eqs. S1–S9 (delivered cost by route)
-  h2risk/simulation.py     Monte Carlo, GRP decomposition, break-even GPR
-  mcc_simulation.py        entry point; writes all tables and figures
-  build_panel.py           monthly panel and quarterly synthetic cost index
-  econometrics/dcc_midas_x.py   two-step QML DCC-MIDAS-X estimator
-R/                         TVP-VAR frequency connectedness; mediation sensitivity
-stata/robustness_checks.do IV (ivreg2, weakivtest), Bai–Perron breaks
-notebooks/data_cleaning.ipynb
-scripts/download_data.py   public inputs (GPR, FRED series)
-data/raw/war_risk_quotes.csv          hand-collected war-risk premium quotes with sources
-tests/                     unit tests (cost model, simulation, estimator)
-docs/                      Supplementary Material (docx), manuscript Figures 1–5, references
+params/production.yaml        techno-economic parameters with distributions and sources (2023)
+params/production_2030.yaml   same, with the 2030 electrolyser cost
+params/countries.yaml         sites, PV yields, default spreads, CRPs, ports and routes
+params/scenarios.yaml         S0, S1, S1a, S2, S3 (ex ante) and H26 (ex post, 2026)
+data/raw/observed_2026.csv    observed 2026 war-risk premiums, spreads and prices, with URLs
+src/h2risk/cost_model.py      delivered-cost model (manuscript Eqs. 1-4)
+src/h2risk/simulation.py      WACC rule (Eq. 5), Monte Carlo, GRP, Shapley split, security premium, break-even
+src/h2risk/sensitivity.py     Sobol indices (SALib)
+src/run_model.py              writes every table and figure of the article and the Supplementary Material
+scripts/fetch_gsa.py          Global Solar Atlas PVOUT at the sites (provenance)
+scripts/route_distances.py    sea distances with searoute (provenance)
+tests/                        unit tests of the cost model and the simulation
+docs/Supplementary_Material.docx, docs/REFERENCES.md, docs/figures/
+extensions/                   v1.0.0 econometric code (DCC-MIDAS-X, TVP-VAR, mediation); not used in v2
 ```
 
-## Map from the manuscript to the code
+## Map from the article to the outputs
 
-| Manuscript | Produced by | Output |
-|---|---|---|
-| Eqs. (1)–(2), Table 5 | `src/h2risk/cost_model.py` | — |
-| Table 6 (scenarios) | `params/scenarios.yaml` | — |
-| Table 11 (decomposition) | `src/mcc_simulation.py` | `table_S6_grp_decomposition.csv` |
-| Table 12 (distribution) | `src/mcc_simulation.py` | `table_S5_lcoh_by_scenario.csv` |
-| Table 13 (competitors, thresholds) | `src/mcc_simulation.py` | `table_S7_competitors.csv`, `table_S9_breakeven_sensitivity.csv` |
-| Table 14 (security value) | `src/mcc_simulation.py` | `table_S8_security_value.csv` |
-| Eqs. (3)–(4), Model I | `src/econometrics/dcc_midas_x.py` | — |
-| Eqs. (5)–(6), Model II | `R/tvp_var_frequency.R` | `outputs/econometrics/` |
-| Eqs. (7)–(9), Model III; Table 7 | `R/mediation_sensitivity.R`, `stata/robustness_checks.do` | `outputs/econometrics/` |
-| Figures 1–5 | authors' figures of Tables 3 and 11–14 | `docs/figures/` |
-| Supplementary Material | generated from `outputs/calibration_2023/` and `params/` | `docs/Supplementary_Material.docx` |
+| Article | Output |
+|---|---|
+| Table 3 (scenarios) | `params/scenarios.yaml` |
+| Table 4, Fig. 2 | `table_algeria_scenarios.csv`, `fig2_cost_distributions` |
+| Fig. 3 | `fig3_channel_decomposition` |
+| Table 5, Fig. 4, Section 4.3 | `table_competitors.csv`, `table_baseline_gap_components.csv`, `table_breakeven.csv`, `fig4_competitor_differentials` |
+| Table 6, Section 4.4 | `table_sobol.csv`, `table_variants.csv`, `convergence.csv` |
+| Table 7, Fig. 5 | `table_validation_2026.csv`, `fig5_validation_2026` |
+| Supplementary Tables S1-S12 | the files above, both calibrations |
 
-## Data availability
+## Data
 
-Public series are downloaded by `scripts/download_data.py` (GPR: Caldara & Iacoviello; global EPU and Brent: FRED). Licensed or author-specified series (EU ETS futures, a financing-cost proxy, the climate risk index) must be placed in `data/raw/` as described in `params/data_dictionary.csv`; they are not redistributed. Algeria has no actively traded external sovereign bond, so the financing channel requires a documented proxy. War-risk premiums are sparse market quotes (`data/raw/war_risk_quotes.csv`) with their sources.
+All inputs are public and documented in `params/` and `docs/REFERENCES.md`; values without an external source are marked **AUTHOR ASSUMPTION**. Fig. 5 uses the Geopolitical Risk index of Caldara and Iacoviello (2022), which is not redistributed: download `data_gpr_export.xls` from https://www.matteoiacoviello.com/gpr.htm and save it as `data/raw/gpr_export.xls`. Without it the model runs and Fig. 5 omits the monthly GPR series. War-risk premiums for 2026 are broker and trade-press quotes, not transaction data.
 
-## Important modelling notes
+## Modelling notes
 
-* The synthetic `LCOH_Export` index is computed with the cost model, so it moves mechanically with the financing proxy and the war-risk premium. Channel shares obtained from it are accounting contributions, not causal effects (Supplementary S2.3 and S7).
-* Route exposure is explicit: Algerian pipeline and Mediterranean shipping routes carry no listed-area war-risk premium by default; `spillover_share` in `scenarios.yaml` tests regional repricing.
-* Competitor results depend on the WACC betas and S0 gaps in `competitors.csv`, which are author assumptions; `table_S9_breakeven_sensitivity.csv` reports the break-evens for two values of the Algerian WACC beta.
-* The R and Stata scripts could not be executed in the build environment; record `sessionInfo()` / Stata version when running them.
+* Algeria has no traded external sovereign bond; its default spread is the synthetic estimate of Damodaran (2026).
+* The scenario WACC uplift is defined for Algeria and scaled to other exporters by the ratio of default spreads. This rule is decisive for the competitor results; `table_variants.csv` reports alternatives.
+* In the ex-ante scenarios one war-risk premium applies to all listed areas; the 2026 test shows this was too uniform.
+* Channels C3 (buyer preferences) and C4 (fossil-input prices) are not priced.
 
 ## Citation
 
-Software archive (all versions, resolves to the latest): https://doi.org/10.5281/zenodo.24182547  
-Version v1.0.0: https://doi.org/10.5281/zenodo.24182548
-
-> Bousbia Laiche, R., Letaim, F., & Cuce, E. (2026). *Replication code and Supplementary Material: Algerian green hydrogen export costs and security premiums under Strait of Hormuz disruptions* (Version v1.0.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.24182548
-
-New GitHub releases are archived automatically by Zenodo as new versions under the same concept DOI.
+Software archive (all versions): https://doi.org/10.5281/zenodo.24182547. Please cite the version you used (see `CITATION.cff`).
 
 ## License
 

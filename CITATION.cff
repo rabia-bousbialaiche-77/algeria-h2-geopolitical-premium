@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite both the software and the article."
-title: "Replication code for: Demand for Algerian green hydrogen in the context of geopolitical supply chain challenges - export costs and security premiums under Strait of Hormuz disruptions"
-version: 1.0.0
+title: "Replication code for: Pricing geopolitical risk into delivered green hydrogen costs - a route-explicit scenario framework for Algeria-EU supply tested on the 2026 Strait of Hormuz closure"
+version: 2.0.0
 doi: 10.5281/zenodo.24182547
 identifiers:
   - type: doi
@@ -11,7 +11,7 @@ identifiers:
     value: 10.5281/zenodo.24182548
     description: Version v1.0.0
 repository-code: "https://github.com/rabia-bousbialaiche-77/algeria-h2-geopolitical-premium"
-date-released: 2026-11-13
+date-released: 2026-11-14
 license: MIT
 authors:
   - family-names: Bousbia Laiche
@@ -29,7 +29,8 @@ keywords:
   - geopolitical risk premium
   - LCOH
   - Monte Carlo simulation
-  - DCC-MIDAS-X
-  - TVP-VAR
+  - cost of capital
+  - war-risk insurance
+  - Sobol sensitivity analysis
   - Algeria
   - Strait of Hormuz

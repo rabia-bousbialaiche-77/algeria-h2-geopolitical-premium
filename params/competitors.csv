@@ -1,6 +1,0 @@
-competitor,s0_gap_low,s0_gap_mode,s0_gap_high,wacc_beta,listed_periods,route_to_europe,basis_gap,basis_beta,basis_route
-Australia,-0.50,-0.40,-0.30,0.3,1,"Indian Ocean - Bab el-Mandeb - Red Sea - Suez","Manuscript Table 13 S0 (AUTHOR ASSUMPTION - to be sourced)","AUTHOR ASSUMPTION","Suez routing assumed; Cape diversion not modelled"
-Oman,-0.30,-0.20,-0.10,1.2,1,"Gulf of Oman (Sohar/Duqm, outside Hormuz) - Bab el-Mandeb - Red Sea - Suez","Manuscript Table 13 S0 (AUTHOR ASSUMPTION - to be sourced)","AUTHOR ASSUMPTION","Sohar lies outside the Strait of Hormuz (Asyad Group, n.d.); Red Sea transit assumed"
-Chile,-0.70,-0.55,-0.40,0.3,0,"Atlantic (Panama or Cape Horn)","Manuscript Table 13 S0 (AUTHOR ASSUMPTION - to be sourced)","AUTHOR ASSUMPTION","No listed area on route"
-Morocco,0.10,0.15,0.20,0.8,0,"Atlantic/Mediterranean","Manuscript Table 13 S0 (AUTHOR ASSUMPTION - to be sourced)","AUTHOR ASSUMPTION","No listed area on route"
-Egypt,-0.05,0.00,0.05,1.1,0,"Mediterranean ports","Manuscript Table 13 S0 (AUTHOR ASSUMPTION - to be sourced)","AUTHOR ASSUMPTION","Mediterranean export ports assumed; set listed_periods=1 for Red Sea-side ports"

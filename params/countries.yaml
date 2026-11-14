@@ -1,0 +1,99 @@
+# ---------------------------------------------------------------------------
+# Route-explicit exporter definitions (manuscript Section 3.4; Supplementary Table S2).
+#
+# pv_yield_kwh_per_kwp_yr : Global Solar Atlas 2.x long-term PVOUT (c-Si, fixed
+#                           optimum tilt) at the site, retrieved 2026-11-14 from
+#                           api.globalsolaratlas.info (data version 2.2.68,
+#                           updated 2026-04-01). Script: scripts/fetch_gsa.py
+# default_spread, crp     : Damodaran (2026), country default spreads and risk
+#                           premiums, January 2026 update.
+# routes                  : ammonia voyages to Rotterdam. Distances (nautical
+#                           miles) from the searoute package v1.6.0 (scripts/
+#                           route_distances.py). areas = war-risk listed areas
+#                           crossed; canal = transit tariff applied per round trip.
+#                           Where several routes exist the cheapest is chosen in
+#                           every draw and scenario (rerouting).
+# ---------------------------------------------------------------------------
+
+destination: "Rotterdam (51.95N, 4.05E)"
+
+countries:
+  Algeria:
+    site: "Hassi R'Mel (32.93N, 3.27E), origin of the SoutH2 / TransMed corridor"
+    pv_yield_kwh_per_kwp_yr: 1901
+    default_spread: 0.0383
+    crp: 0.0583
+    port: "Arzew (35.85N, 0.30W)"
+    pipeline: true
+    routes:
+      - {name: "Mediterranean - Gibraltar", nm: 1640, canal: none, areas: []}
+  Morocco:
+    site: "Guelmim-Oued Noun (28.98N, 10.06W)"
+    pv_yield_kwh_per_kwp_yr: 1858
+    default_spread: 0.0213
+    crp: 0.0324
+    port: "Jorf Lasfar (33.12N, 8.64W)"
+    pipeline: false
+    routes:
+      - {name: "Atlantic", nm: 1398, canal: none, areas: []}
+  Egypt:
+    site: "SCZONE Ain Sokhna (29.60N, 32.30E)"
+    pv_yield_kwh_per_kwp_yr: 1897
+    default_spread: 0.0637
+    crp: 0.0971
+    port: "Ain Sokhna (29.60N, 32.35E)"
+    pipeline: false
+    routes:
+      - {name: "Suez northbound", nm: 3396, canal: suez, areas: []}
+  Oman:
+    site: "Duqm (19.70N, 57.60E), outside the Strait of Hormuz and the Gulf of Oman"
+    pv_yield_kwh_per_kwp_yr: 1889
+    default_spread: 0.0187
+    crp: 0.0285
+    port: "Duqm (19.67N, 57.70E)"
+    pipeline: false
+    routes:
+      - {name: "Bab el-Mandeb - Red Sea - Suez", nm: 5623, canal: suez, areas: [red_sea]}
+      - {name: "Cape of Good Hope", nm: 10406, canal: none, areas: []}
+  Australia:
+    site: "Pilbara (20.40S, 118.70E)"
+    pv_yield_kwh_per_kwp_yr: 1926
+    default_spread: 0.0
+    crp: 0.0
+    port: "Port Hedland (20.31S, 118.58E)"
+    pipeline: false
+    routes:
+      - {name: "Bab el-Mandeb - Red Sea - Suez", nm: 9760, canal: suez, areas: [red_sea]}
+      - {name: "Cape of Good Hope", nm: 11244, canal: none, areas: []}
+  Chile:
+    site: "Antofagasta region (23.30S, 70.10W)"
+    pv_yield_kwh_per_kwp_yr: 2198
+    default_spread: 0.0072
+    crp: 0.0110
+    port: "Mejillones (23.10S, 70.45W)"
+    pipeline: false
+    routes:
+      - {name: "Panama Canal", nm: 7106, canal: panama, areas: []}
+      - {name: "Strait of Magellan", nm: 9425, canal: none, areas: []}
+
+# Sensitivity: Omani exports from Sohar, inside the Gulf of Oman listed area.
+oman_sohar_variant:
+  port: "Sohar (24.36N, 56.73E)"
+  routes:
+    - {name: "Gulf of Oman - Bab el-Mandeb - Red Sea - Suez", nm: 6123, canal: suez, areas: [gulf, red_sea]}
+    - {name: "Gulf of Oman - Cape of Good Hope", nm: 10906, canal: none, areas: [gulf]}
+
+# Country cost of capital (real, pre-tax):
+#   WACC_i = WACC_ref + debt_share * default_spread_i + (1 - debt_share) * crp_i
+# WACC_ref is calibrated so that Algeria's WACC is 7-9% (mode 8%), the range
+# used in the earlier version of the model; debt_share = 0.70 follows the
+# 70/30 debt-equity structure of Terrapon-Pfaff et al. (2025).
+wacc_ref: {dist: triangular, low: 0.0257, mode: 0.0357, high: 0.0457}
+debt_share: 0.70
+
+# Exposure of each country's WACC to a geopolitical shock relative to Algeria:
+#   beta_i = default_spread_i / default_spread_Algeria
+# (spread-proportional rule; Kharroubi (2026) finds larger spread increases
+# where spreads are already high). Alternative rule in the sensitivity runs.
+beta_rule: spread_proportional
+beta_alternative: {Morocco: 0.8, Egypt: 1.1, Oman: 1.2, Australia: 0.3, Chile: 0.3}

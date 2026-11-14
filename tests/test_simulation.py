@@ -1,27 +1,25 @@
 import numpy as np
-
 from h2risk.simulation import run
 
 
+def test_grp_is_zero_in_baseline_and_monotone_on_path():
+    r = run(2000, 3)
+    g = [r["grp"][("Algeria", "pipeline", s)]["grp"]["mean"] for s in ("S0", "S1", "S2", "S3")]
+    assert g[0] == 0.0 and g[1] < g[2] < g[3]
+
+
+def test_shapley_parts_add_up():
+    r = run(2000, 3)
+    for k, v in r["grp"].items():
+        assert abs(v["financing"] + v["insurance"] - v["grp"]["mean"]) < 1e-9
+
+
+def test_algeria_routes_have_no_insurance_exposure():
+    r = run(2000, 3)
+    assert abs(r["grp"][("Algeria", "pipeline", "S3")]["insurance"]) < 1e-12
+    assert abs(r["grp"][("Algeria", "ship", "S3")]["insurance"]) < 1e-12
+
+
 def test_reproducible_with_seed():
-    a = run(2000, seed=1)
-    b = run(2000, seed=1)
-    assert a["scenarios"][("pipeline", "S3")]["grp"]["mean"] == b["scenarios"][("pipeline", "S3")]["grp"]["mean"]
-
-
-def test_decomposition_adds_up():
-    r = run(2000, seed=2)
-    for key, d in r["scenarios"].items():
-        total = d["grp"]["mean"]
-        assert np.isclose(d["financing_contrib"] + d["insurance_contrib"], total, atol=1e-9)
-
-
-def test_grp_increases_with_escalation():
-    r = run(2000, seed=3)
-    g = [r["scenarios"][("pipeline", s)]["grp"]["mean"] for s in ("S0", "S1", "S2", "S3")]
-    assert all(x < y for x, y in zip(g, g[1:]))
-
-
-def test_baseline_grp_is_zero():
-    r = run(500, seed=4)
-    assert r["scenarios"][("pipeline", "S0")]["grp"]["mean"] == 0.0
+    a, b = run(1000, 11), run(1000, 11)
+    assert a["costs"][("Oman", "ship", "S3")]["total"]["p50"] == b["costs"][("Oman", "ship", "S3")]["total"]["p50"]

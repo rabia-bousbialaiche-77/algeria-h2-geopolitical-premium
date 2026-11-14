@@ -21,6 +21,11 @@ def load_yaml(name: str) -> dict:
         return yaml.safe_load(fh)
 
 
+def load_countries() -> dict:
+    """Route-explicit exporter definitions (countries.yaml)."""
+    return load_yaml("countries.yaml")
+
+
 def load_competitors() -> list[dict]:
     with open(PARAM_DIR / "competitors.csv", encoding="utf-8") as fh:
         rows = list(csv.DictReader(fh))

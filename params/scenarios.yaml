@@ -1,69 +1,72 @@
 # ---------------------------------------------------------------------------
-# Escalation scenarios (manuscript Table 6) and route exposure.
-# gpr_change    : change in GPR relative to its historical mean (share).
-# wacc_uplift_pp: increase in the WACC of Algerian projects (percentage points).
-#                 Drawn from a triangular distribution with +/- spread around the
-#                 manuscript value.
-# war_risk_rate : additional war-risk premium (AP) for one 7-day transit of a
-#                 listed area, as a share of hull value.
-# probability   : expert-judgement weight (used only for probability-weighted
-#                 expectations; results are always reported per scenario).
+# Escalation scenarios (manuscript Table 3) along the Hormuz escalation path.
+#
+# S0-S3 and S1a are the ex-ante design carried over unchanged from the
+# earlier version of the model (v1.0.0, DOI 10.5281/zenodo.24182548); they
+# were not re-estimated on the 2026 Hormuz episode, which is used only to
+# test them (manuscript Section 4.5). H26 is an ex-post scenario calibrated
+# to the observed 2026 quotes (data/raw/observed_2026.csv).
+#
+# gpr_change     : GPR relative to its 1985-2019 mean (= 100), as a share.
+# wacc_uplift_pp : increase in Algeria's WACC (percentage points), drawn from a
+#                  triangular distribution +/- wacc_uplift_spread around the
+#                  value (comonotonic across scenarios). Other exporters:
+#                  beta_i x Algeria's uplift (countries.yaml).
+# war_risk       : additional war-risk premium (AP) per entry into a listed
+#                  area, share of hull value, by area. In the ex-ante design
+#                  the same AP applies to every listed area (red_sea, gulf).
+# Scenario probabilities of the earlier version are no longer used.
 # ---------------------------------------------------------------------------
 
-wacc_uplift_spread: 0.25        # +/- 25% around the manuscript point value (AUTHOR ASSUMPTION)
-
-# Scaling of the Table 6 WACC uplift for Algerian projects in the competitor
-# comparison (competitors use wacc_beta in competitors.csv). 1.0 = the uplift in
-# Table 6 applies in full to Algeria. A sensitivity run with 0.5 is also reported.
-algeria_wacc_beta: 1.0
+wacc_uplift_spread: 0.25        # +/- 25% around the scenario value (AUTHOR ASSUMPTION)
+hormuz_path: [S0, S1, S2, S3]   # scenarios on the GPR path used for break-even curves
 
 scenarios:
   S0:
     label: "Baseline"
     gpr_change: 0.0
     wacc_uplift_pp: 0.0
-    war_risk_rate: {dist: fixed, value: 0.0005}
-    probability: 0.55
-    sources: "War-risk AP before the Red Sea crisis: 0.05% of hull value (Lin, 2025)."
+    war_risk:
+      red_sea: {dist: fixed, value: 0.0005}
+      gulf:    {dist: fixed, value: 0.0005}
+    sources: "Pre-crisis AP 0.05% of hull value (Lin, 2025)."
   S1:
-    label: "Moderate tension"
+    label: "Diplomatic tension"
     gpr_change: 0.25
     wacc_uplift_pp: 1.2
-    war_risk_rate: {dist: triangular, low: 0.0010, mode: 0.0015, high: 0.0020}
-    probability: 0.25
-    sources: "GPR, WACC and probability: manuscript Table 6. War-risk AP: AUTHOR ASSUMPTION."
+    war_risk:
+      red_sea: {dist: triangular, low: 0.0010, mode: 0.0015, high: 0.0020}
+      gulf:    {dist: triangular, low: 0.0010, mode: 0.0015, high: 0.0020}
+    sources: "Ex-ante design (AUTHOR ASSUMPTION)."
   S1a:
-    label: "Red Sea model"
+    label: "Red Sea-calibrated"
     gpr_change: 0.375
     wacc_uplift_pp: 1.5
-    war_risk_rate: {dist: triangular, low: 0.0070, mode: 0.0085, high: 0.0100}
-    probability: 0.10
-    sources: "War-risk AP 0.7-1.0% of hull value observed during the Red Sea crisis (Lin, 2025; Notteboom et al., 2024)."
+    war_risk:
+      red_sea: {dist: triangular, low: 0.0070, mode: 0.0085, high: 0.0100}
+      gulf:    {dist: triangular, low: 0.0010, mode: 0.0015, high: 0.0020}
+    sources: "Red Sea AP 0.7-1.0% of hull value in 2024 (Insurance Journal, 2024; Lin, 2025); Gulf AP as in S1."
   S2:
     label: "Partial closure"
     gpr_change: 0.60
     wacc_uplift_pp: 2.0
-    war_risk_rate: {dist: triangular, low: 0.010, mode: 0.015, high: 0.020}
-    probability: 0.07
-    sources: "GPR, WACC and probability: manuscript Table 6. War-risk AP: AUTHOR ASSUMPTION."
+    war_risk:
+      red_sea: {dist: triangular, low: 0.010, mode: 0.015, high: 0.020}
+      gulf:    {dist: triangular, low: 0.010, mode: 0.015, high: 0.020}
+    sources: "Ex-ante design (AUTHOR ASSUMPTION)."
   S3:
-    label: "Full blockade + conflict"
+    label: "Full blockade"
     gpr_change: 1.20
     wacc_uplift_pp: 2.8
-    war_risk_rate: {dist: triangular, low: 0.020, mode: 0.035, high: 0.050}
-    probability: 0.03
-    sources: "GPR, WACC and probability: manuscript Table 6. War-risk AP: AUTHOR ASSUMPTION."
-
-# Route exposure of Algerian exports -------------------------------------------
-# listed_periods  : number of 7-day war-risk periods charged per voyage.
-# spillover_share : share of the listed-area AP that is passed on to voyages
-#                   outside listed areas (regional/global repricing).
-algeria_routes:
-  pipeline:
-    listed_periods: 0
-    spillover_share: 0.0
-    note: "Pipeline (TransMed / prospective SoutH2): no maritime war-risk exposure."
-  ship:
-    listed_periods: 0
-    spillover_share: 0.0
-    note: "Ammonia shipping Algeria -> North Italy stays in the Mediterranean (no listed area). Set spillover_share > 0 to test regional repricing (AUTHOR ASSUMPTION)."
+    war_risk:
+      red_sea: {dist: triangular, low: 0.020, mode: 0.035, high: 0.050}
+      gulf:    {dist: triangular, low: 0.020, mode: 0.035, high: 0.050}
+    sources: "Ex-ante design (AUTHOR ASSUMPTION)."
+  H26:
+    label: "Hormuz 2026, as observed (ex post)"
+    gpr_change: 1.62
+    wacc_uplift_pp: {dist: triangular, low: 0.0, mode: 0.25, high: 0.5}
+    war_risk:
+      red_sea: {dist: triangular, low: 0.003, mode: 0.005, high: 0.010}
+      gulf:    {dist: triangular, low: 0.010, mode: 0.030, high: 0.100}
+    sources: "GPR: mean of March-May 2026 (Caldara and Iacoviello, 2022, data to October 2026). WACC: JPMorgan EMBI GD spread +17 to +25 bp and Egypt +44 bp, March 2026 (Reuters, 2026); Algeria = Egypt / beta_Egypt. AP: observed 2026 quotes (data/raw/observed_2026.csv)."

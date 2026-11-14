@@ -1,0 +1,6 @@
+variant,DZpipe_S0_cost_p50,DZpipe_GRP_S3_p50,p05,p95,pct_of_S0,DZpipe_GRP_H26_p50,Oman_gap_vsDZnh3_S3_p50,Oman_share_crossing,Oman_breakeven_median,Australia_gap_vsDZnh3_S3_p50,Australia_share_crossing
+"baseline (spread-proportional beta, Duqm)",5.948,1.027,0.817,1.258,17.3,0.088,-0.756,0.0,,-1.971,0.0
+author betas (earlier version),5.948,1.027,0.817,1.258,17.3,0.088,-0.021,0.264,1.08,-1.711,0.0
+Algeria beta = 0.5,5.948,0.504,0.402,0.616,8.49,0.044,-0.248,0.0,,-1.463,0.0
+Oman exports from Sohar,5.948,1.027,0.817,1.258,17.3,0.088,0.048,0.609,0.96,-1.971,0.0
+independent scenario shocks,5.948,1.027,0.822,1.26,17.33,0.089,-0.757,0.0,,-1.973,0.0

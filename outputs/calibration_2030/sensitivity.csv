@@ -1,9 +1,0 @@
-parameter,dS0cost_low,dS0cost_high,dGRP_S3_low,dGRP_S3_high
-el_capex_usd_per_kw,-0.687,0.458,-0.12,0.08
-pv_capex_usd_per_kw,-0.487,0.45,-0.121,0.112
-pv_yield_kwh_per_kwp_yr,0.43,-0.285,0.082,-0.054
-wacc_base,-0.317,0.328,-0.027,0.024
-el_sec_kwh_per_kg,-0.279,0.279,-0.053,0.053
-pipeline_transport_eur_per_mwh,-0.18,0.18,0.0,0.0
-pv_fixed_om_usd_per_kw_yr,-0.075,0.075,-0.0,-0.0
-desal_cost_usd_per_m3,-0.014,0.018,0.0,0.0

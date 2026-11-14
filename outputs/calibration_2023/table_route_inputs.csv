@@ -1,0 +1,10 @@
+country,site,pvout_kwh_kwp,wacc_pct_p50,beta,port,route,distance_nm,roundtrip_days_at_15kn,canal,listed_areas,carrier
+Algeria,"Hassi R'Mel (32.93N, 3.27E), origin of the SoutH2 / TransMed corridor",1901,8.0,1.0,"Arzew (35.85N, 0.30W)",Mediterranean - Gibraltar,1640,13.1,none,none,pipeline + ammonia
+Morocco,"Guelmim-Oued Noun (28.98N, 10.06W)",1858,6.033,0.556,"Jorf Lasfar (33.12N, 8.64W)",Atlantic,1398,11.8,none,none,ammonia
+Egypt,"SCZONE Ain Sokhna (29.60N, 32.30E)",1897,10.942,1.663,"Ain Sokhna (29.60N, 32.35E)",Suez northbound,3396,22.9,suez,none,ammonia
+Oman,"Duqm (19.70N, 57.60E), outside the Strait of Hormuz and the Gulf of Oman",1889,5.734,0.488,"Duqm (19.67N, 57.70E)",Bab el-Mandeb - Red Sea - Suez,5623,35.2,suez,red_sea,ammonia
+Oman,"Duqm (19.70N, 57.60E), outside the Strait of Hormuz and the Gulf of Oman",1889,5.734,0.488,"Duqm (19.67N, 57.70E)",Cape of Good Hope,10406,61.8,none,none,ammonia
+Australia,"Pilbara (20.40S, 118.70E)",1926,3.57,0.0,"Port Hedland (20.31S, 118.58E)",Bab el-Mandeb - Red Sea - Suez,9760,58.2,suez,red_sea,ammonia
+Australia,"Pilbara (20.40S, 118.70E)",1926,3.57,0.0,"Port Hedland (20.31S, 118.58E)",Cape of Good Hope,11244,66.5,none,none,ammonia
+Chile,"Antofagasta region (23.30S, 70.10W)",2198,4.404,0.188,"Mejillones (23.10S, 70.45W)",Panama Canal,7106,43.5,panama,none,ammonia
+Chile,"Antofagasta region (23.30S, 70.10W)",2198,4.404,0.188,"Mejillones (23.10S, 70.45W)",Strait of Magellan,9425,56.4,none,none,ammonia

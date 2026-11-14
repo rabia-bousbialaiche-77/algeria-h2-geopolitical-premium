@@ -28,4 +28,13 @@ Keys in `params/*.yaml` → full references.
 | Restelli_2024 | Restelli, F., Spatolisano, E., Pellegrini, L. A., de Angelis, A. R., Cattaneo, S., & Roccaro, E. (2024). Detailed techno-economic assessment of ammonia as green H2 carrier. *International Journal of Hydrogen Energy, 52*, 532–547. https://doi.org/10.1016/j.ijhydene.2023.06.206 |
 | Steffen_2020 | Steffen, B. (2020). Estimating the cost of capital for renewable energy projects. *Energy Economics, 88*, Article 104783. https://doi.org/10.1016/j.eneco.2020.104783 |
 | Timmerberg_2019 | Timmerberg, S., & Kaltschmitt, M. (2019). Hydrogen from renewables: Supply from North Africa to Central Europe as blend in existing pipelines – Potentials and costs. *Applied Energy, 237*, 795–809. https://doi.org/10.1016/j.apenergy.2019.01.030 |
+| IRENA_2022b | International Renewable Energy Agency. (2022). *Global hydrogen trade to meet the 1.5°C climate goal: Part II – Technology review of hydrogen carriers*. IRENA. |
+| GSA_2026 | Solargis & World Bank (ESMAP). (2026). *Global Solar Atlas 2.x, long-term PVOUT, data version 2.2.68* [Dataset; accessed 14 November 2026]. https://globalsolaratlas.info |
+| Damodaran_2026 | Damodaran, A. (2026). *Country default spreads and risk premiums, January 2026 update* [Dataset]. NYU Stern. https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/ctryprem.html |
+| TerraponPfaff_2025 | Terrapon-Pfaff, J., Braun, J., Ersoy, S. R., Prantner, M., Kern, J., & Viebahn, P. (2025). Country risk impacts on export costs of green hydrogen and its synthetic downstream products from the Middle East and North Africa. *Frontiers in Energy Research, 13*, 1546876. https://doi.org/10.3389/fenrg.2025.1546876 |
+| InsuranceJournal_2024 | Insurance Journal. (2024, January 16). *Red Sea war risk insurance rates rise as attacks continue* (Reuters). https://www.insurancejournal.com/news/international/2024/01/16/755775.htm |
+| SPGlobal_2026 | S&P Global Commodity Insights. (2026, July 22). *Middle East shipping insurance costs rise on Hormuz risks: Marsh*. https://www.spglobal.com/energy/en/news-research/latest-news/shipping/072226-middle-east-shipping-insurance-costs-rise-on-hormuz-risks-marsh |
+| Reuters_2026 | Reuters. (2026, March 27). *Emerging economies' record debt spree slumps into a freeze as Iran war rocks markets*. |
+| Searoute | Halili, G. *searoute: shortest sea routes in Python* (version 1.6.0) [Software]. https://github.com/genthalili/searoute-py |
+| SALib | Herman, J., & Usher, W. (2017). SALib: An open-source Python library for sensitivity analysis. *Journal of Open Source Software, 2*(9), 97. https://doi.org/10.21105/joss.00097 |
 | AUTHOR | Modelling assumption of the authors; must be justified in the manuscript or replaced with a sourced value. |

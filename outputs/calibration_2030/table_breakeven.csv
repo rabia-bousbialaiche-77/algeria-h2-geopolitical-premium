@@ -1,0 +1,11 @@
+competitor,algeria_mode,share_DZ_cheaper_at_S0,share_gain_S0_S3,share_never_cheaper,gain_gpr_median,gain_p05,gain_p95,share_lose_S0_S3,lose_gpr_median,lose_p05,lose_p95
+Morocco,pipeline,1.0,0.0,0.0,,,,0.0,,,
+Morocco,ship,0.0,0.0,1.0,,,,0.0,,,
+Egypt,pipeline,1.0,0.0,0.0,,,,0.0,,,
+Egypt,ship,1.0,0.0,0.0,,,,0.0,,,
+Oman,pipeline,1.0,0.0,0.0,,,,0.0,,,
+Oman,ship,0.0,0.0,1.0,,,,0.0,,,
+Australia,pipeline,1.0,0.0,0.0,,,,0.052,0.98,0.5,1.2
+Australia,ship,0.0,0.0,1.0,,,,0.0,,,
+Chile,pipeline,1.0,0.0,0.0,,,,0.154,0.82,0.28,1.18
+Chile,ship,0.0,0.0,1.0,,,,0.0,,,

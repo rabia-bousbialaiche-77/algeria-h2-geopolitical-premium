@@ -10,11 +10,10 @@
 #   basis  : how the value was obtained. Entries marked AUTHOR ASSUMPTION
 #            are modelling choices that must be justified or replaced with a
 #            sourced value before submission.
-# Price basis: constant 2023 US dollars.
-# VARIANT: 2030 projection (differs from production.yaml only in el_capex_usd_per_kw).
+# Price basis: constant 2023 US dollars. 2030 calibration (electrolyser CAPEX only).
 # ---------------------------------------------------------------------------
 
-# --- Solar PV supply (southern Algeria) -------------------------------------
+# --- Solar PV supply (all exporters) ------------------------------------------
 pv_capex_usd_per_kw:
   dist: triangular
   low: 550
@@ -33,14 +32,14 @@ pv_fixed_om_usd_per_kw_yr:
   source: AUTHOR
   basis: "AUTHOR ASSUMPTION (about 1.6% of the PV capital cost per year)."
 
-pv_yield_kwh_per_kwp_yr:
+pv_yield_factor:
   dist: triangular
-  low: 1950
-  mode: 2120
-  high: 2250
-  unit: kWh/kWp/yr
-  source: BoudgheneStambouli_2012
-  basis: "Mode = 2650 kWh/m2/yr mean annual irradiation in the Saharan zone (Ministry of Energy data reported in Boudghene Stambouli et al., 2012) x performance ratio 0.80. Bounds: AUTHOR ASSUMPTION. Verify the page/table before submission."
+  low: 0.95
+  mode: 1.00
+  high: 1.05
+  unit: multiplier on the site PVOUT in countries.yaml
+  source: GSA_2026
+  basis: "Site long-term PVOUT from the Global Solar Atlas (countries.yaml). +/-5% band for model and inter-annual uncertainty: AUTHOR ASSUMPTION. The same draw is applied to all countries (common random numbers)."
 
 pv_lifetime_yr:
   dist: fixed
@@ -114,14 +113,7 @@ desal_cost_usd_per_m3:
   basis: "AUTHOR ASSUMPTION; to be checked against Chahtou and Taoussi (2025)."
 
 # --- Cost of capital ---------------------------------------------------------
-wacc_base:
-  dist: triangular
-  low: 0.07
-  mode: 0.08
-  high: 0.09
-  unit: real, per yr
-  source: AUTHOR
-  basis: "Mode = 8% baseline stated in the manuscript (Section 1.2). Steffen (2020) documents higher cost of capital in developing countries. Bounds: AUTHOR ASSUMPTION."
+# Country WACC is built in countries.yaml (WACC_ref + country premium).
 
 # --- Transport to Europe -----------------------------------------------------
 pipeline_transport_eur_per_mwh:
@@ -133,14 +125,79 @@ pipeline_transport_eur_per_mwh:
   source: Timmerberg_2019
   basis: "Timmerberg and Kaltschmitt (2019): minimum transport cost 9 (low case) and 19 (high case) EUR/MWh for North African hydrogen blended into existing pipelines to Central Europe. Mode: midpoint."
 
-ship_chain_eur_per_kg:
+nh3_chain_10k_usd_per_kg:
   dist: triangular
-  low: 5.49
-  mode: 5.90
-  high: 6.34
-  unit: EUR/kg H2
-  source: Restelli_2024
-  basis: "Restelli et al. (2024): ammonia value chain North Africa -> North Italy (synthesis, storage, maritime transport, distribution and cracking), industrial application, 5.49-6.34 EUR/kg."
+  low: 2.5
+  mode: 3.5
+  high: 4.5
+  unit: USD/kg H2
+  source: IRENA_2022b
+  basis: "IRENA (2022b): transport cost of hydrogen as ammonia in 2030, excluding hydrogen production, USD 2.5-4.5/kg H2 for 10,000 km (conversion, storage, shipping, reconversion). The distance-independent part (synthesis, storage, cracking) is this value minus the bottom-up shipping cost at 10,000 km; the shipping part is then recomputed for each route."
+
+ship_speed_kn:
+  dist: triangular
+  low: 14
+  mode: 15
+  high: 17
+  unit: knots
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION (service speed of large gas carriers)."
+
+ship_port_days_per_call:
+  dist: fixed
+  value: 2
+  unit: days per port call (two calls per round trip)
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION."
+
+ship_operating_days_yr:
+  dist: fixed
+  value: 350
+  unit: days/yr
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION."
+
+ship_life_yr:
+  dist: fixed
+  value: 25
+  unit: yr
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION."
+
+ship_wacc:
+  dist: fixed
+  value: 0.08
+  unit: real, per yr
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION (international ship finance, independent of exporter)."
+
+ship_om_share:
+  dist: fixed
+  value: 0.025
+  unit: share of ship CAPEX per yr
+  source: IRENA_2022b
+  basis: "IRENA (2022b): operating cost of ammonia carriers taken as 2.5% of CAPEX per year."
+
+ship_fuel_share_per_5000km:
+  dist: fixed
+  value: 0.01
+  unit: share of cargo consumed per 5,000 km per leg
+  source: IRENA_2022b
+  basis: "IRENA (2022b): ballast-leg fuel in the order of 1% of the full cargo for every 5,000 km; the laden leg is assumed equal (AUTHOR ASSUMPTION)."
+
+canal_tariff_usd_per_kg:
+  dist: fixed
+  value: 0.07
+  unit: USD/kg H2 per round trip
+  source: IRENA_2022b
+  basis: "IRENA (2022b), Box 2.1: Suez round trip USD 0.65-0.75 million, about USD 0.07/kg H2 for a 60,000 t NH3 carrier. Applied also to the Panama Canal (AUTHOR ASSUMPTION)."
+
+listed_transits_per_roundtrip:
+  dist: fixed
+  value: 2
+  unit: additional-premium charges per round trip through a listed area
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION: the additional war-risk premium is charged on entry to a listed area, once on the ballast leg and once on the laden leg."
 
 eur_usd:
   dist: fixed

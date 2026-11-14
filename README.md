@@ -63,7 +63,8 @@ All inputs are public and documented in `params/` and `docs/REFERENCES.md`; valu
 
 ## Citation
 
-Software archive (all versions): https://doi.org/10.5281/zenodo.24182547. Please cite the version you used (see `CITATION.cff`).
+Software archive (all versions): https://doi.org/10.5281/zenodo.24182547  
+Version v2.0.0 (used in the article): https://doi.org/10.5281/zenodo.24210196
 
 ## License
 

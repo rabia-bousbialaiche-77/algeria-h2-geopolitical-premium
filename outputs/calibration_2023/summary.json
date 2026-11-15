@@ -23,5 +23,78 @@
     "Australia": 1926.118953021406,
     "Chile": 2198.135752201999
   },
-  "sobol_n_eval": 30720
+  "sobol_n_eval": 30720,
+  "sobol_n_inputs": 13,
+  "sobol_inputs": [
+    "pv_capex_usd_per_kw",
+    "pv_fixed_om_usd_per_kw_yr",
+    "pv_yield_factor",
+    "el_capex_usd_per_kw",
+    "el_sec_kwh_per_kg",
+    "desal_cost_usd_per_m3",
+    "pipeline_transport_eur_per_mwh",
+    "nh3_chain_10k_usd_per_kg",
+    "ship_speed_kn",
+    "hull_value_usd",
+    "wacc_ref",
+    "u_w",
+    "u_a"
+  ],
+  "central": {
+    "wacc_central": 0.08000000000000002,
+    "full_load_hours": 2634.2428571428572,
+    "usable_yield": 1843.97,
+    "pipeline_transport": 0.5039496,
+    "h2_cargo_kt": 11.039168448000003,
+    "insurance_per_1pct_ap": 0.22646633320038992,
+    "wacc_8pct": {
+      "wacc": 0.08,
+      "total": 5.7387442589490725,
+      "electrolyser": 3.3178858829268116,
+      "electricity": 2.3858583760222603,
+      "water": 0.035
+    },
+    "wacc_11pct": {
+      "wacc": 0.11,
+      "total": 6.905249218189124,
+      "electrolyser": 3.9383845542956597,
+      "electricity": 2.9318646638934642,
+      "water": 0.035
+    },
+    "central": {
+      "wacc": 0.08000000000000002,
+      "total": 5.7387442589490725,
+      "electrolyser": 3.3178858829268116,
+      "electricity": 2.3858583760222607,
+      "water": 0.035
+    },
+    "central_plus_S3": {
+      "wacc": 0.10800000000000001,
+      "total": 6.824694732752091,
+      "electrolyser": 3.895524267271396,
+      "electricity": 2.8941704654806943,
+      "water": 0.035
+    },
+    "S3_premium_parts": {
+      "electrolyser": 0.5776383843445845,
+      "electricity": 0.5083120894584336,
+      "total": 1.0859504738030181,
+      "with_hybrid_full_load_hours": {
+        "4500": 0.8464542645631585,
+        "5000": 0.8126400470526861,
+        "6000": 0.7619187207869773
+      }
+    }
+  },
+  "algeria_pipeline_S0": {
+    "mean": 6.370142111423684,
+    "p50": 6.337373263578441,
+    "modal_sum": 6.242693858949073
+  },
+  "shapley_interaction_mean": {
+    "Oman|ship|S1a": 0.0016587565188683883,
+    "Oman|ship|S2": 0.012299115566913755,
+    "Oman|ship|S3": 0.017493816547652623,
+    "Oman|ship|H26": 4.997225551508464e-05
+  }
 }

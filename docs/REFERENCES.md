@@ -34,7 +34,11 @@ Keys in `params/*.yaml` → full references.
 | TerraponPfaff_2025 | Terrapon-Pfaff, J., Braun, J., Ersoy, S. R., Prantner, M., Kern, J., & Viebahn, P. (2025). Country risk impacts on export costs of green hydrogen and its synthetic downstream products from the Middle East and North Africa. *Frontiers in Energy Research, 13*, 1546876. https://doi.org/10.3389/fenrg.2025.1546876 |
 | InsuranceJournal_2024 | Insurance Journal. (2024, January 16). *Red Sea war risk insurance rates rise as attacks continue* (Reuters). https://www.insurancejournal.com/news/international/2024/01/16/755775.htm |
 | SPGlobal_2026 | S&P Global Commodity Insights. (2026, July 22). *Middle East shipping insurance costs rise on Hormuz risks: Marsh*. https://www.spglobal.com/energy/en/news-research/latest-news/shipping/072226-middle-east-shipping-insurance-costs-rise-on-hormuz-risks-marsh |
-| Reuters_2026 | Reuters. (2026, March 27). *Emerging economies' record debt spree slumps into a freeze as Iran war rocks markets*. |
+| Reuters_2026 | Reuters. (2026, March 27). *Emerging economies' record debt spree slumps into a freeze as Iran war rocks markets*. https://finance.yahoo.com/markets/currencies/articles/emerging-economies-record-debt-spree-121527908.html |
 | Searoute | Halili, G. *searoute: shortest sea routes in Python* (version 1.6.0) [Software]. https://github.com/genthalili/searoute-py |
 | SALib | Herman, J., & Usher, W. (2017). SALib: An open-source Python library for sensitivity analysis. *Journal of Open Source Software, 2*(9), 97. https://doi.org/10.21105/joss.00097 |
+| Argus_2026a | Argus Media. (2026, March 30). *Red Sea AWRP up after Houthi attack on Israel*. https://www.argusmedia.com/en/news-and-insights/latest-market-news/2807928-red-sea-awrp-up-after-houthi-attack-on-israel |
+| Argus_2026b | Argus Media. (2026, April 14). *Q&A: Hormuz tensions put spotlight on marine insurance*. https://www.argusmedia.com/en/news-and-insights/latest-market-news/2813755-q-a-hormuz-tensions-put-spotlight-on-marine-insurance |
+| InsuranceJournal_2026 | Insurance Journal. (2026, July 23). *War risk insurance costs surge for southern Red Sea voyages after Houthi attacks* (Reuters). https://www.insurancejournal.com/news/international/2026/07/23/878788.htm |
+| GPR_data | Caldara, D., & Iacoviello, M. *Geopolitical Risk (GPR) Index* [Dataset; monthly data to October 2026]. https://www.matteoiacoviello.com/gpr.htm |
 | AUTHOR | Modelling assumption of the authors; must be justified in the manuscript or replaced with a sourced value. |

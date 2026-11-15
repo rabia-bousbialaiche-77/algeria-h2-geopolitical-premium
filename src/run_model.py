@@ -115,23 +115,57 @@ def tables(res, variants, sob, conv):
     rows = []
     for out, d in sob["indices"].items():
         for k, v in sorted(d.items(), key=lambda kv: -kv[1]["ST"]):
-            rows.append([out, k, r3(v["S1"]), r3(v["S1_conf"]), r3(v["ST"]), r3(v["ST_conf"])])
-    write_csv("table_sobol.csv", ["output", "input", "S1", "S1_conf95", "ST", "ST_conf95"], rows)
+            rows.append([out, k, r3(v["S1"]), r3(v["S1_conf"]), r3(v["ST"]), r3(v["ST_conf"]),
+                         v["status"]])
+    write_csv("table_sobol.csv", ["output", "input", "S1", "S1_conf95", "ST", "ST_conf95", "status"], rows)
 
     rows = []
     for name, r in variants.items():
         g3 = r["grp"][("Algeria", "pipeline", "S3")]
         gh = r["grp"][("Algeria", "pipeline", "H26")]
+        a3 = r["grp"][("Algeria", "ship", "S3")]
+        ch = r["gaps"][("Chile", "pipeline")]["S3"]
         rows.append([name, r3(r["costs"][("Algeria", "pipeline", "S0")]["total"]["p50"]), r3(g3["grp"]["p50"]),
                      r3(g3["grp"]["p05"]), r3(g3["grp"]["p95"]), round(100 * g3["pct_of_S0_mean"], 2), r3(gh["grp"]["p50"]),
+                     r3(r["costs"][("Algeria", "ship", "S0")]["total"]["p50"]), r3(a3["grp"]["p50"]),
+                     round(100 * a3["pct_of_S0_mean"], 2),
                      r3(r["gaps"][("Oman", "ship")]["S3"]["gap"]["p50"]), round(r["breakeven"][("Oman", "ship")]["cross_within_S3_share"], 3),
                      r3(r["breakeven"][("Oman", "ship")]["median_if_crossed"]),
                      r3(r["gaps"][("Australia", "ship")]["S3"]["gap"]["p50"]),
-                     round(r["breakeven"][("Australia", "ship")]["cross_within_S3_share"], 3)])
+                     round(r["breakeven"][("Australia", "ship")]["cross_within_S3_share"], 3),
+                     r3(ch["gap"]["p05"]), r3(ch["gap"]["p50"]), r3(ch["gap"]["p95"]), round(ch["share_algeria_cheaper"], 3),
+                     r3(r["costs"][("Oman", "ship", "S3")]["total"]["p50"]),
+                     r3(r["costs"][("Egypt", "ship", "S3")]["total"]["p50"])])
     write_csv("table_variants.csv", ["variant", "DZpipe_S0_cost_p50", "DZpipe_GRP_S3_p50", "p05", "p95", "pct_of_S0",
-                                     "DZpipe_GRP_H26_p50", "Oman_gap_vsDZnh3_S3_p50", "Oman_share_crossing",
-                                     "Oman_breakeven_median", "Australia_gap_vsDZnh3_S3_p50", "Australia_share_crossing"], rows)
+                                     "DZpipe_GRP_H26_p50", "DZnh3_S0_cost_p50", "DZnh3_GRP_S3_p50", "DZnh3_pct_of_S0",
+                                     "Oman_gap_vsDZnh3_S3_p50", "Oman_share_crossing",
+                                     "Oman_breakeven_median", "Australia_gap_vsDZnh3_S3_p50", "Australia_share_crossing",
+                                     "Chile_gap_vsDZpipe_S3_p05", "Chile_gap_vsDZpipe_S3_p50", "Chile_gap_vsDZpipe_S3_p95",
+                                     "Chile_share_DZpipe_cheaper_S3", "Oman_cost_S3_p50", "Egypt_cost_S3_p50"], rows)
     write_csv("convergence.csv", ["n", "running_mean_grp_S3_pipe", "mcse_mean", "running_ES95", "mcse_ES95_batch"], conv)
+
+
+def _plain(o):
+    """Results dictionary with tuple keys and numpy scalars made JSON-serialisable."""
+    if isinstance(o, dict):
+        return {("|".join(k) if isinstance(k, tuple) else str(k)): _plain(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [_plain(v) for v in o]
+    if isinstance(o, np.ndarray):
+        return None
+    if isinstance(o, (np.floating, np.integer)):
+        return float(o)
+    return o
+
+
+def full_results(variants, sob):
+    """Unrounded statistics behind the tables (outputs/.../results_full.json); the numbers quoted in
+    the article are formatted from this file, which avoids rounding a rounded value."""
+    keep = ("costs", "grp", "gaps", "breakeven", "shocks_summary", "wacc", "betas", "central")
+    out = {"variants": {name: {k: _plain(r[k]) for k in keep} for name, r in variants.items()},
+           "sobol": {"n_base": sob["n_base"], "n_eval": sob["n_eval"], "n_inputs": sob["n_inputs"],
+                     "inputs": sob["inputs"], "indices": sob["indices"]}}
+    (OUT / "results_full.json").write_text(json.dumps(out, indent=1))
 
 
 def convergence(res):
@@ -149,20 +183,34 @@ def convergence(res):
 
 
 def validation_table(res):
+    """Ex-ante scenario values against the observations in data/raw/observed_2026.csv."""
     sc = res["shocks_summary"]
+    scen = load_yaml("scenarios.yaml")["scenarios"]
+    h26 = scen["H26"]["wacc_uplift_pp"]
+    anchor = float(h26["mode"])                          # Algerian equivalent of Egypt's +44 bp (pp)
+    w2, w3 = sc["S2"]["w"]["p50"], sc["S3"]["w"]["p50"]
+    g = {s: 100 * (1 + sc[s]["gpr"]) for s in ("S1", "S2", "S3")}
+    band = lambda s, a: f"{100*sc[s]['ap'][a]['p05']:.1f}-{100*sc[s]['ap'][a]['p95']:.1f}"
     rows = [
-        ["GPR (1985-2019 mean = 100)", "S2: 160; S3: 220", "Mar 2026: 330; Apr: 253; May: 204; Jun-Oct: 126-178",
-         "Exceeded S3 in March-April; S2 level by June", "Caldara and Iacoviello (2022), data to Oct 2026"],
-        ["War-risk AP, Strait of Hormuz (% hull/transit)",
-         f"S2: {100*sc['S2']['ap']['gulf']['p05']:.1f}-{100*sc['S2']['ap']['gulf']['p95']:.1f}; S3: {100*sc['S3']['ap']['gulf']['p05']:.1f}-{100*sc['S3']['ap']['gulf']['p95']:.1f}",
-         "Pre-war 0.20-0.25; Mar 1.0-3.0; mid-Jun ~5 then ~2; Jul 7.5-10", "Within S3 until June; above S3 in July",
-         "Insurance Business; Trans.info; Datamar; S&P Global (2026)"],
-        ["War-risk AP, Red Sea (% hull/transit)",
-         f"S2: {100*sc['S2']['ap']['red_sea']['p05']:.1f}-{100*sc['S2']['ap']['red_sea']['p95']:.1f}; S3: {100*sc['S3']['ap']['red_sea']['p05']:.1f}-{100*sc['S3']['ap']['red_sea']['p95']:.1f}",
-         "0.3 before 20 Jul; 0.5 after", "Below S2 (design applied one AP to all listed areas)", "S&P Global (2026)"],
+        ["GPR (1985-2019 mean = 100; % above mean in brackets)",
+         f"S2: {g['S2']:.0f} (+{100*sc['S2']['gpr']:.0f}%); S3: {g['S3']:.0f} (+{100*sc['S3']['gpr']:.0f}%)",
+         "Mar 2026: 330; Apr: 253; May: 204; Jun-Oct: 126-178",
+         "Above S3 in March-April; near S2 from June", "Caldara and Iacoviello (2022), data to Oct 2026"],
+        ["War-risk AP, Strait of Hormuz (% hull per transit)",
+         f"S2: {band('S2', 'gulf')}; S3: {band('S3', 'gulf')}",
+         "Pre-war 0.20-0.25; early Mar 1.0-3.0; 30 Mar 5.0-7.5; 10 Apr ~3 (withdrawn); mid-Jun ~5 then ~2; late Jul 7.5-10",
+         "Reached the S3 band within a week; above it in late March, mid-June and July",
+         "Insurance Business; Trans.info; Datamar; Argus Media; S&P Global (2026)"],
+        ["War-risk AP, Red Sea / Bab el-Mandeb (% hull per transit)",
+         f"S2: {band('S2', 'red_sea')}; S3: {band('S3', 'red_sea')}",
+         "Late Mar ~0.6 to 0.65-0.75; 13 Apr 0.75; mid-Jul 0.3; 21-23 Jul 0.5-0.75, then above 1",
+         "Below the S2 band until late July (design applied one AP to all listed areas)",
+         "Argus Media; S&P Global; Reuters via Insurance Journal (2026)"],
         ["Financing shock (WACC / sovereign spreads)",
-         f"Algeria WACC +{sc['S2']['w']['p50']:.1f} pp (S2), +{sc['S3']['w']['p50']:.1f} pp (S3)",
-         "EMBI GD +17 to +25 bp; Egypt +44 bp; Angola tighter (Mar 2026)", "S2-S3 are 8 to 16 times the observed EMBI move",
+         f"Algeria WACC +{w2:.1f} pp (S2), +{w3:.1f} pp (S3)",
+         f"EMBI GD +17 to +25 bp; Egypt +44 bp (Mar 2026); Algerian equivalent {anchor:.2f} pp (Egypt / beta)",
+         f"S2 and S3 uplifts are {w2/anchor:.0f} and {w3/anchor:.0f} times the {anchor:.2f}-pp Algerian equivalent "
+         f"({100*w2/25:.0f}-{100*w3/17:.0f} times the raw EMBI move)",
          "Reuters (2026)"],
         ["Hydrogen-derivative prices", "Not a cost item for green hydrogen (channel C4)", "Urea price doubled Jan-Apr 2026",
          "Consistent with C4 raising grey-ammonia costs", "IEA (2026)"],
@@ -192,27 +240,31 @@ def figures(res, sob):
         fig.savefig(OUT / f"{name}.pdf", bbox_inches="tight")
         plt.close(fig)
 
-    # Fig. 1 - framework diagram
-    fig, ax = plt.subplots(figsize=(7.2, 3.6))
+    # Fig. 1 - framework diagram (notation as in Eqs. 1-7 of the article)
+    fig, ax = plt.subplots(figsize=(7.2, 3.7))
     ax.set_xlim(0, 10); ax.set_ylim(0, 5); ax.axis("off")
-    def box(x, y, w, h, txt, fc, ec, bold=False):
+    def box(x, y, w, h, txt, fc, ec, bold=False, fs=7):
         ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.02,rounding_size=0.08", fc=fc, ec=ec, lw=1))
-        ax.text(x + w / 2, y + h / 2, txt, ha="center", va="center", fontsize=7, weight="bold" if bold else "normal")
-    box(0.1, 1.85, 2.2, 1.3, "Geopolitical shock\n(GPR level;\nlisted-area war-risk\npremiums)", "#eef4fc", PAL[0], True)
-    chans = [("C1 Financing\nWACC uplift x beta", 3.9, "cost item"), ("C2 Insurance\nAP x transits x V / M", 2.75, "cost item"),
-             ("C3 Buyer preferences\n(contract terms)", 1.6, "not a cost item"), ("C4 Fossil input prices\n(grey H2 / NH3)", 0.45, "not a cost item")]
-    for i, (t, y, kind) in enumerate(chans):
-        fc = "#fdf0e9" if kind == "cost item" else "#f4f5f7"
-        ec = PAL[1] if kind == "cost item" else GRID
-        box(3.2, y, 2.6, 0.85, t, fc, ec)
-        ax.add_patch(FancyArrowPatch((2.2, 2.5), (3.2, y + 0.42), arrowstyle="-|>", mutation_scale=9, color=MUTED, lw=0.8))
-    box(6.6, 2.5, 3.3, 1.4, "Route-explicit delivered cost\nC(s) = LCOH_prod(r + dr)\n+ T(d) + I(s)\n(cheapest route per draw)", "#eaf7f1", PAL[2], True)
-    box(6.6, 0.5, 3.3, 1.5, "Outputs:\nGRP(s) = C(s) - C(S0)\nchannel shares (Shapley)\nbreak-even GPR; security premium", "#fff6e0", PAL[3])
-    for y in (4.3, 3.15):
-        ax.add_patch(FancyArrowPatch((5.8, y), (6.6, 3.2), arrowstyle="-|>", mutation_scale=9, color=PAL[1], lw=1))
-    ax.add_patch(FancyArrowPatch((8.25, 2.5), (8.25, 2.0), arrowstyle="-|>", mutation_scale=9, color=MUTED, lw=0.8))
-    ax.text(4.5, 0.15, "C3 and C4 shape demand and the cost of fossil alternatives; they are discussed, not priced.",
-            ha="center", fontsize=7, color=MUTED)
+        ax.text(x + w / 2, y + h / 2, txt, ha="center", va="center", fontsize=fs, weight="bold" if bold else "normal",
+                linespacing=1.35)
+    def arrow(p, q, col=MUTED, lw=0.8):
+        ax.add_patch(FancyArrowPatch(p, q, arrowstyle="-|>", mutation_scale=9, color=col, lw=lw, shrinkA=0, shrinkB=0))
+    box(0.05, 1.8, 2.4, 1.4, "Geopolitical scenario $s$\nGPR level,\nWACC uplift,\nwar-risk premiums\nof listed areas", "#eef4fc", PAL[0], True, fs=6.6)
+    chans = [("C1 Financing\n" + r"$r_i(s)=r_i(S0)+\beta_i\,\Delta r_{DZ}(s)$", 3.95, True),
+             ("C2 Insurance and rerouting\n" + r"$I_k(s)=2\,V\,\Sigma_a AP_a(s)\,/\,Q$", 2.8, True),
+             ("C3 Buyer preferences\n(contract terms)", 1.65, False),
+             ("C4 Fossil input prices\n(grey H$_2$ / NH$_3$)", 0.5, False)]
+    for t, y, priced in chans:
+        box(3.05, y, 2.85, 0.85, t, "#fdf0e9" if priced else "#f4f5f7", PAL[1] if priced else GRID)
+        arrow((2.49, 2.5), (3.03, y + 0.42))
+    box(6.6, 2.75, 3.3, 1.75, "Route-explicit delivered cost\n" + r"$C_{i,m}(s)=LCOH^{prod}_i(r_i(s))$" + "\n"
+        + r"$+\,T_{i,m}(s)+I_{i,m}(s)+K_i$" + "\n(cheapest route in every draw)", "#eaf7f1", PAL[2], True)
+    box(6.6, 0.5, 3.3, 1.6, "Outputs\n" + r"$GRP_{i,m}(s)=C_{i,m}(s)-C_{i,m}(S0)$" + "\nShapley split into C1 and C2\nbreak-even GPR; security premium",
+        "#fff6e0", PAL[3])
+    arrow((5.92, 4.37), (6.58, 3.95), PAL[1], 1.0)
+    arrow((5.92, 3.22), (6.58, 3.35), PAL[1], 1.0)
+    arrow((8.25, 2.73), (8.25, 2.14))
+    ax.text(4.47, 0.14, "C3 and C4 are discussed but not priced.", ha="center", fontsize=6.5, color=MUTED)
     save(fig, "fig1_framework")
 
     # Fig. 2 - violin plots of delivered cost (Algeria)
@@ -237,16 +289,17 @@ def figures(res, sob):
     fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.0), sharey=False)
     for ax, s, title in zip(axes, ("S3", "H26"), ("(a) S3, full blockade (ex ante)", "(b) H26, Hormuz 2026 as observed")):
         x = np.arange(len(units))
-        fin = [res["grp"][(c, m, s)]["financing"] for c, m, _ in units]
-        ins = [res["grp"][(c, m, s)]["insurance"] for c, m, _ in units]
+        fin = [res["grp"][(c, m, s)]["financing_p50"] for c, m, _ in units]
+        ins = [res["grp"][(c, m, s)]["insurance_p50"] for c, m, _ in units]
         ax.bar(x, fin, 0.62, color=PAL[0], label="Financing (C1)", edgecolor="white", lw=0.8)
         ax.bar(x, ins, 0.62, bottom=fin, color=PAL[1], label="Insurance and rerouting (C2)", edgecolor="white", lw=0.8)
         ax.set_xticks(x, [u[2] for u in units], fontsize=7, rotation=35, ha="right"); ax.set_title(title, fontsize=8.5, loc="left"); _style(ax)
         ax.axhline(0, color=MUTED, lw=0.6); ax.set_ylim(0, 1.15 * max(np.add(fin, ins)))
     axes[0].set_ylabel("Change in delivered cost vs S0 (USD/kg)")
     h, l = axes[0].get_legend_handles_labels()
-    fig.legend(h, l, frameon=False, fontsize=7, loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.04))
-    fig.tight_layout(rect=(0, 0.05, 1, 1)); save(fig, "fig3_channel_decomposition")
+    fig.legend(h, l, frameon=False, fontsize=7, loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.01))
+    fig.text(0.5, -0.045, "The vertical scales of the two panels differ by about a factor of ten.", ha="center", fontsize=7, color=MUTED)
+    fig.tight_layout(rect=(0, 0.06, 1, 1)); save(fig, "fig3_channel_decomposition")
 
     # Fig. 4 - cost differential vs GPR
     fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.3), sharex=True)
@@ -275,7 +328,9 @@ def figures(res, sob):
         ax.plot(g.month, g.GPR, color=INK, lw=1.4, label="GPR (monthly)")
     for s, col in (("S1", PAL[3]), ("S2", PAL[1]), ("S3", PAL[4])):
         lev = 100 * (1 + res["shocks_summary"][s]["gpr"])
-        ax.axhline(lev, color=col, lw=1, ls="--"); ax.text(pd.Timestamp("2025-01-15"), lev + 4, f"{s} ({lev:.0f})", fontsize=7, color=col)
+        ax.axhline(lev, color=col, lw=1, ls="--")
+        ax.text(pd.Timestamp("2025-07-20"), lev + 5, f"{s} ({lev:.0f})", fontsize=7, color=col,
+                bbox=dict(fc="white", ec="none", pad=0.6, alpha=0.85))
     ax.set_title("(a) Geopolitical Risk Index, 2025-2026", fontsize=8.5, loc="left"); _style(ax)
     ax.set_ylabel("Index (1985-2019 = 100)")
     ax.tick_params(axis="x", labelrotation=30)
@@ -284,16 +339,19 @@ def figures(res, sob):
     t0, t1 = pd.Timestamp("2026-02-15"), pd.Timestamp("2026-08-15")
     for s, col in (("S2", PAL[1]), ("S3", PAL[4])):
         lo, hi = 100 * sc[s]["ap"]["gulf"]["p05"], 100 * sc[s]["ap"]["gulf"]["p95"]
-        ax.fill_between([t0, t1], lo, hi, color=col, alpha=0.15, lw=0); ax.text(t0, hi * 1.05, f"{s} band", fontsize=7, color=col)
-    w = obs[obs.variable == "war_risk_ap"]
+        ax.fill_between([t0, t1], lo, hi, color=col, alpha=0.15, lw=0); ax.text(t1, hi * 1.04, f"{s} band ", fontsize=7, color=col, ha="right")
+    w = obs[obs.variable == "war_risk_ap"].sort_values("date")
     for area, col, mk in (("Strait of Hormuz", PAL[0], "o"), ("Bab el-Mandeb / Red Sea", PAL[2], "s")):
         d = w[w.area == area]
+        mid = (d.value_low + d.value_high) / 2
+        ax.plot(d.date, mid, "-", color=col, lw=0.8, alpha=0.6)            # path between dated quotes
         ax.vlines(d.date, d.value_low, d.value_high, color=col, lw=1.5)
-        ax.plot(d.date, (d.value_low + d.value_high) / 2, mk, color=col, ms=4, label=area)
+        ax.plot(d.date, mid, mk, color=col, ms=3.5, label=area)
     ax.set_yscale("log"); ax.set_ylim(0.1, 15)
+    ax.set_xlim(t0, t1)
     ax.set_ylabel("War-risk additional premium (% of hull value)")
     ax.set_title("(b) Observed premiums vs ex-ante S2/S3", fontsize=8.5, loc="left"); _style(ax)
-    ax.legend(frameon=False, fontsize=7, loc="lower right"); ax.tick_params(axis="x", labelrotation=30)
+    ax.legend(frameon=False, fontsize=7, loc="lower left", bbox_to_anchor=(0.18, 0.0)); ax.tick_params(axis="x", labelrotation=30)
     fig.tight_layout(); save(fig, "fig5_validation_2026")
 
     # Fig. S - Sobol indices
@@ -327,22 +385,36 @@ def main():
                 "author betas (earlier version)": run(a.n, a.seed, beta_rule="alternative"),
                 "Algeria beta = 0.5": run(a.n, a.seed, algeria_beta=0.5),
                 "Oman exports from Sohar": run(a.n, a.seed, oman_port="Sohar"),
-                "independent scenario shocks": run(a.n, a.seed, independent=True)}
+                "independent scenario shocks": run(a.n, a.seed, independent=True),
+                "midstream capital exposed to exporter WACC (upper bound)": run(a.n, a.seed, midstream=True),
+                "fuel valued at production cost + 1 USD/kg": run(a.n, a.seed, fuel_adder=True),
+                "independent PV yield factor per site": run(a.n, a.seed, independent_yield=True)}
     from h2risk.sensitivity import run_sobol
     sob = run_sobol(2048, a.seed, "S3")
     conv = convergence(res)
     tables(res, variants, sob, conv)
     validation_table(res)
+    full_results(variants, sob)
     if not a.no_figures:
         figures(res, sob)
     summary = {
         "betas": res["betas"], "wacc_p50": {k: v["p50"] for k, v in res["wacc"].items()},
-        "pv_yield_mean": res["pv_yield"], "sobol_n_eval": sob["n_eval"],
+        "pv_yield_mean": res["pv_yield"], "sobol_n_eval": sob["n_eval"], "sobol_n_inputs": sob["n_inputs"],
+        "sobol_inputs": sob["inputs"],
+        # Algerian production cost at the modal parameters (worked example, Section 3.3) and
+        # the back-of-the-envelope bound for wind-solar hybrid supply (Section 5.3)
+        "central": res["central"],
+        "algeria_pipeline_S0": {"mean": res["costs"][("Algeria", "pipeline", "S0")]["total"]["mean"],
+                                "p50": res["costs"][("Algeria", "pipeline", "S0")]["total"]["p50"],
+                                "modal_sum": res["central"]["central"]["total"] + res["central"]["pipeline_transport"]},
+        "shapley_interaction_mean": {f"{c}|{m}|{sc}": v["interaction"] for (c, m, sc), v in res["grp"].items()
+                                     if abs(v["interaction"]) > 1e-9},
     }
     (OUT / "summary.json").write_text(json.dumps(summary, indent=2))
     log = {"model_version": __version__, "calibration": a.calibration, "production_file": P.PRODUCTION_FILE,
            "n_draws": a.n, "seed": a.seed, "timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-           "python": platform.python_version(), "numpy": np.__version__, "parameter_files_sha256": params_hash()}
+           "python": platform.python_version(), "numpy": np.__version__, "parameter_files_sha256": params_hash(),
+           "gpr_workbook_present": (ROOT / "data" / "raw" / "gpr_export.xls").exists()}
     (OUT / "run_log.json").write_text(json.dumps(log, indent=2))
     print(json.dumps(log, indent=2))
 

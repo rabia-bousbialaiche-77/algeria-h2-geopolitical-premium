@@ -1,2 +1,2 @@
-"""h2risk: geopolitical risk premium model for Algerian green hydrogen exports."""
-__version__ = "2.0.0"
+"""Route-explicit delivered-cost model of green hydrogen under geopolitical shocks."""
+__version__ = "2.1.0"

@@ -23,3 +23,16 @@ def test_algeria_routes_have_no_insurance_exposure():
 def test_reproducible_with_seed():
     a, b = run(1000, 11), run(1000, 11)
     assert a["costs"][("Oman", "ship", "S3")]["total"]["p50"] == b["costs"][("Oman", "ship", "S3")]["total"]["p50"]
+
+
+def test_algerian_ammonia_premium_is_not_below_the_pipeline_premium():
+    """With the reference voyage valued at the baseline cost, shipping adds fuel to the premium."""
+    r = run(2000, 3)
+    for s in ("S1", "S2", "S3", "H26"):
+        assert r["grp"][("Algeria", "ship", s)]["grp"]["p50"] >= r["grp"][("Algeria", "pipeline", s)]["grp"]["p50"]
+
+
+def test_shapley_interaction_is_zero_without_rerouting():
+    r = run(2000, 3)
+    assert abs(r["grp"][("Chile", "ship", "S3")]["interaction"]) < 1e-12
+    assert r["grp"][("Oman", "ship", "S3")]["interaction"] > 0

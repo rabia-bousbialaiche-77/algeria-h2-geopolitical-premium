@@ -1,6 +1,9 @@
-variant,DZpipe_S0_cost_p50,DZpipe_GRP_S3_p50,p05,p95,pct_of_S0,DZpipe_GRP_H26_p50,Oman_gap_vsDZnh3_S3_p50,Oman_share_crossing,Oman_breakeven_median,Australia_gap_vsDZnh3_S3_p50,Australia_share_crossing
-"baseline (spread-proportional beta, Duqm)",6.266,1.08,0.819,1.394,17.31,0.093,-0.806,0.0,,-2.09,0.0
-author betas (earlier version),6.266,1.08,0.819,1.394,17.31,0.093,-0.03,0.214,1.08,-1.817,0.0
-Algeria beta = 0.5,6.266,0.53,0.402,0.683,8.49,0.046,-0.27,0.0,,-1.556,0.0
-Oman exports from Sohar,6.266,1.08,0.819,1.394,17.31,0.093,-0.003,0.495,0.98,-2.09,0.0
-independent scenario shocks,6.266,1.082,0.82,1.392,17.33,0.093,-0.807,0.0,,-2.089,0.0
+variant,DZpipe_S0_cost_p50,DZpipe_GRP_S3_p50,p05,p95,pct_of_S0,DZpipe_GRP_H26_p50,DZnh3_S0_cost_p50,DZnh3_GRP_S3_p50,DZnh3_pct_of_S0,Oman_gap_vsDZnh3_S3_p50,Oman_share_crossing,Oman_breakeven_median,Australia_gap_vsDZnh3_S3_p50,Australia_share_crossing,Chile_gap_vsDZpipe_S3_p05,Chile_gap_vsDZpipe_S3_p50,Chile_gap_vsDZpipe_S3_p95,Chile_share_DZpipe_cheaper_S3,Oman_cost_S3_p50,Egypt_cost_S3_p50
+"baseline (spread-proportional beta, Duqm)",6.337,1.095,0.831,1.411,17.35,0.094,9.102,1.108,12.26,-0.845,0.0,,-2.167,0.0,-0.591,0.309,1.186,0.714,9.375,12.495
+author betas (earlier version),6.337,1.095,0.831,1.411,17.35,0.094,9.102,1.108,12.26,-0.028,0.236,1.08,-1.88,0.0,-0.478,0.405,1.271,0.776,10.196,11.784
+Algeria beta = 0.5,6.337,0.537,0.408,0.691,8.51,0.047,9.102,0.544,6.01,-0.279,0.0,,-1.603,0.0,0.049,0.874,1.68,0.961,9.375,12.495
+Oman exports from Sohar,6.337,1.095,0.831,1.411,17.35,0.094,9.102,1.108,12.26,-0.042,0.417,1.0,-2.167,0.0,-0.591,0.309,1.186,0.714,10.189,12.495
+independent scenario shocks,6.337,1.097,0.832,1.41,17.38,0.095,9.102,1.111,12.28,-0.846,0.0,,-2.166,0.0,-0.586,0.312,1.177,0.715,9.369,12.485
+midstream capital exposed to exporter WACC (upper bound),6.337,1.193,0.916,1.521,18.87,0.103,9.102,1.714,18.87,-1.107,0.0,,-2.768,0.0,-0.575,0.351,1.258,0.737,9.719,13.319
+fuel valued at production cost + 1 USD/kg,6.337,1.095,0.831,1.411,17.35,0.094,9.074,1.108,12.3,-0.78,0.0,,-2.096,0.0,-0.578,0.322,1.199,0.722,9.412,12.48
+independent PV yield factor per site,6.34,1.094,0.833,1.409,17.35,0.094,9.102,1.108,12.26,-0.835,0.0,,-2.156,0.0,-0.631,0.32,1.217,0.707,9.379,12.475

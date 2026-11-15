@@ -1,40 +1,40 @@
-output,input,S1,S1_conf95,ST,ST_conf95
-"Algeria pipeline, S0 delivered cost",el_capex_usd_per_kw,0.405,0.038,0.406,0.022
-"Algeria pipeline, S0 delivered cost",pv_capex_usd_per_kw,0.269,0.032,0.268,0.015
-"Algeria pipeline, S0 delivered cost",wacc_ref,0.123,0.022,0.122,0.009
-"Algeria pipeline, S0 delivered cost",el_sec_kwh_per_kg,0.091,0.018,0.092,0.006
-"Algeria pipeline, S0 delivered cost",pv_yield_factor,0.072,0.014,0.072,0.005
-"Algeria pipeline, S0 delivered cost",pipeline_transport_eur_per_mwh,0.032,0.01,0.032,0.002
-"Algeria pipeline, S0 delivered cost",pv_fixed_om_usd_per_kw_yr,0.007,0.005,0.007,0.001
-"Algeria pipeline, S0 delivered cost",desal_cost_usd_per_m3,0.0,0.001,0.0,0.0
-"Algeria pipeline, S0 delivered cost",nh3_chain_10k_usd_per_kg,0.0,0.0,0.0,0.0
-"Algeria pipeline, S0 delivered cost",ship_speed_kn,0.0,0.0,0.0,0.0
-"Algeria pipeline, S0 delivered cost",hull_value_usd,0.0,0.0,0.0,0.0
-"Algeria pipeline, S0 delivered cost",u_w,0.0,0.0,0.0,0.0
-"Algeria pipeline, S0 delivered cost",u_a,0.0,0.0,0.0,0.0
-"Algeria pipeline, GRP S3",u_w,0.659,0.041,0.664,0.035
-"Algeria pipeline, GRP S3",pv_capex_usd_per_kw,0.16,0.022,0.158,0.01
-"Algeria pipeline, GRP S3",el_capex_usd_per_kw,0.12,0.019,0.118,0.008
-"Algeria pipeline, GRP S3",el_sec_kwh_per_kg,0.031,0.011,0.032,0.002
-"Algeria pipeline, GRP S3",pv_yield_factor,0.024,0.009,0.025,0.002
-"Algeria pipeline, GRP S3",wacc_ref,0.008,0.006,0.007,0.001
-"Algeria pipeline, GRP S3",pv_fixed_om_usd_per_kw_yr,-0.0,0.0,0.0,0.0
-"Algeria pipeline, GRP S3",pipeline_transport_eur_per_mwh,-0.0,0.0,0.0,0.0
-"Algeria pipeline, GRP S3",desal_cost_usd_per_m3,-0.0,0.0,0.0,0.0
-"Algeria pipeline, GRP S3",nh3_chain_10k_usd_per_kg,0.0,0.0,0.0,0.0
-"Algeria pipeline, GRP S3",ship_speed_kn,0.0,0.0,0.0,0.0
-"Algeria pipeline, GRP S3",hull_value_usd,0.0,0.0,0.0,0.0
-"Algeria pipeline, GRP S3",u_a,0.0,0.0,0.0,0.0
-"Oman minus Algeria (ammonia), gap S3",u_w,0.364,0.031,0.367,0.022
-"Oman minus Algeria (ammonia), gap S3",pv_capex_usd_per_kw,0.333,0.031,0.33,0.02
-"Oman minus Algeria (ammonia), gap S3",el_capex_usd_per_kw,0.192,0.025,0.189,0.012
-"Oman minus Algeria (ammonia), gap S3",el_sec_kwh_per_kg,0.055,0.013,0.056,0.004
-"Oman minus Algeria (ammonia), gap S3",pv_yield_factor,0.042,0.011,0.044,0.003
-"Oman minus Algeria (ammonia), gap S3",hull_value_usd,0.006,0.005,0.007,0.001
-"Oman minus Algeria (ammonia), gap S3",ship_speed_kn,0.006,0.005,0.006,0.0
-"Oman minus Algeria (ammonia), gap S3",wacc_ref,0.004,0.004,0.003,0.0
-"Oman minus Algeria (ammonia), gap S3",pv_fixed_om_usd_per_kw_yr,0.001,0.002,0.001,0.0
-"Oman minus Algeria (ammonia), gap S3",desal_cost_usd_per_m3,0.0,0.0,0.0,0.0
-"Oman minus Algeria (ammonia), gap S3",nh3_chain_10k_usd_per_kg,0.0,0.0,0.0,0.0
-"Oman minus Algeria (ammonia), gap S3",pipeline_transport_eur_per_mwh,0.0,0.0,0.0,0.0
-"Oman minus Algeria (ammonia), gap S3",u_a,0.0,0.0,0.0,0.0
+output,input,S1,S1_conf95,ST,ST_conf95,status
+"Algeria pipeline, S0 delivered cost",el_capex_usd_per_kw,0.395,0.037,0.396,0.022,active
+"Algeria pipeline, S0 delivered cost",pv_capex_usd_per_kw,0.279,0.032,0.278,0.016,active
+"Algeria pipeline, S0 delivered cost",wacc_ref,0.124,0.022,0.123,0.009,active
+"Algeria pipeline, S0 delivered cost",el_sec_kwh_per_kg,0.091,0.018,0.092,0.006,active
+"Algeria pipeline, S0 delivered cost",pv_yield_factor,0.072,0.014,0.072,0.005,active
+"Algeria pipeline, S0 delivered cost",pipeline_transport_eur_per_mwh,0.031,0.01,0.031,0.002,active
+"Algeria pipeline, S0 delivered cost",pv_fixed_om_usd_per_kw_yr,0.007,0.006,0.007,0.001,active
+"Algeria pipeline, S0 delivered cost",desal_cost_usd_per_m3,0.0,0.001,0.0,0.0,active
+"Algeria pipeline, S0 delivered cost",nh3_chain_10k_usd_per_kg,0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, S0 delivered cost",ship_speed_kn,0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, S0 delivered cost",hull_value_usd,0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, S0 delivered cost",u_w,0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, S0 delivered cost",u_a,0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, GRP S3",u_w,0.658,0.041,0.663,0.035,active
+"Algeria pipeline, GRP S3",pv_capex_usd_per_kw,0.165,0.022,0.163,0.01,active
+"Algeria pipeline, GRP S3",el_capex_usd_per_kw,0.117,0.019,0.114,0.008,active
+"Algeria pipeline, GRP S3",el_sec_kwh_per_kg,0.031,0.011,0.032,0.002,active
+"Algeria pipeline, GRP S3",pv_yield_factor,0.024,0.009,0.025,0.002,active
+"Algeria pipeline, GRP S3",wacc_ref,0.008,0.006,0.007,0.001,active
+"Algeria pipeline, GRP S3",pv_fixed_om_usd_per_kw_yr,-0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, GRP S3",pipeline_transport_eur_per_mwh,-0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, GRP S3",desal_cost_usd_per_m3,-0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, GRP S3",nh3_chain_10k_usd_per_kg,0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, GRP S3",ship_speed_kn,0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, GRP S3",hull_value_usd,0.0,0.0,0.0,0.0,structurally inactive
+"Algeria pipeline, GRP S3",u_a,0.0,0.0,0.0,0.0,structurally inactive
+"Oman minus Algeria (ammonia), gap S3",u_w,0.371,0.031,0.375,0.022,active
+"Oman minus Algeria (ammonia), gap S3",pv_capex_usd_per_kw,0.337,0.031,0.334,0.02,active
+"Oman minus Algeria (ammonia), gap S3",el_capex_usd_per_kw,0.184,0.024,0.181,0.012,active
+"Oman minus Algeria (ammonia), gap S3",el_sec_kwh_per_kg,0.054,0.013,0.055,0.004,active
+"Oman minus Algeria (ammonia), gap S3",pv_yield_factor,0.041,0.011,0.043,0.003,active
+"Oman minus Algeria (ammonia), gap S3",hull_value_usd,0.006,0.005,0.006,0.0,active
+"Oman minus Algeria (ammonia), gap S3",ship_speed_kn,0.006,0.005,0.006,0.0,active
+"Oman minus Algeria (ammonia), gap S3",wacc_ref,0.004,0.004,0.003,0.0,active
+"Oman minus Algeria (ammonia), gap S3",pv_fixed_om_usd_per_kw_yr,0.001,0.002,0.001,0.0,active
+"Oman minus Algeria (ammonia), gap S3",desal_cost_usd_per_m3,0.0,0.0,0.0,0.0,active
+"Oman minus Algeria (ammonia), gap S3",nh3_chain_10k_usd_per_kg,-0.0,0.0,0.0,0.0,structurally inactive
+"Oman minus Algeria (ammonia), gap S3",pipeline_transport_eur_per_mwh,0.0,0.0,0.0,0.0,structurally inactive
+"Oman minus Algeria (ammonia), gap S3",u_a,0.0,0.0,0.0,0.0,no effect on the sampled support

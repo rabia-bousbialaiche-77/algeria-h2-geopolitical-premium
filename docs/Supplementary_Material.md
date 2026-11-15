@@ -327,7 +327,7 @@ Code, parameters, observed 2026 data and outputs: https://github.com/rabia-bousb
 
 # References
 
-Bousbia Laiche R, Letaim F, Cuce E. Replication code and Supplementary Material: pricing geopolitical risk into delivered green hydrogen costs (Algeria–EU, 2026 Strait of Hormuz closure) (version v2.1.0) [software]. Zenodo; 2026. https://doi.org/10.5281/zenodo.24182547.
+Bousbia Laiche R, Letaim F, Cuce E. Replication code and Supplementary Material: pricing geopolitical risk into delivered green hydrogen costs (Algeria–EU, 2026 Strait of Hormuz closure) (version v2.1.0) [software]. Zenodo; 2026. https://doi.org/10.5281/zenodo.24244835.
 
 Caldara D, Iacoviello M. Measuring geopolitical risk. Am Econ Rev 2022;112:1194–225. https://doi.org/10.1257/aer.20191823.
 

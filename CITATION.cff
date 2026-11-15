@@ -8,6 +8,9 @@ identifiers:
     value: 10.5281/zenodo.24182547
     description: Concept DOI (all versions)
   - type: doi
+    value: 10.5281/zenodo.24244835
+    description: Version v2.1.0
+  - type: doi
     value: 10.5281/zenodo.24210196
     description: Version v2.0.0 (previous version)
 repository-code: "https://github.com/rabia-bousbialaiche-77/algeria-h2-geopolitical-premium"

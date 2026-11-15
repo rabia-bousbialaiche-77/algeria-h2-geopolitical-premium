@@ -72,7 +72,7 @@ All inputs are public and documented in `params/` and `docs/REFERENCES.md`; valu
 ## Citation
 
 Software archive (all versions): https://doi.org/10.5281/zenodo.24182547  
-Version v2.1.0 (used in the revised article): DOI assigned by Zenodo when the v2.1.0 release is published  
+Version v2.1.0 (used in the revised article): https://doi.org/10.5281/zenodo.24244835  
 Version v2.0.0: https://doi.org/10.5281/zenodo.24210196
 
 ## License

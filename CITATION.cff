@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite both the software and the article."
 title: "Replication code for: Pricing geopolitical risk into delivered green hydrogen costs - a route-explicit scenario framework for Algeria-EU supply tested on the 2026 Strait of Hormuz closure"
-version: 2.0.0
+version: 2.1.0
 doi: 10.5281/zenodo.24182547
 identifiers:
   - type: doi
@@ -9,9 +9,9 @@ identifiers:
     description: Concept DOI (all versions)
   - type: doi
     value: 10.5281/zenodo.24210196
-    description: Version v2.0.0
+    description: Version v2.0.0 (previous version)
 repository-code: "https://github.com/rabia-bousbialaiche-77/algeria-h2-geopolitical-premium"
-date-released: 2026-11-14
+date-released: 2026-11-15
 license: MIT
 authors:
   - family-names: Bousbia Laiche

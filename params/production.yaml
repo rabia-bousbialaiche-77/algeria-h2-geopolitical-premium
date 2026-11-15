@@ -265,3 +265,25 @@ ets_price_eur_per_t:
   unit: EUR/t CO2
   source: AUTHOR
   basis: "AUTHOR ASSUMPTION; only used when embedded_emissions_kgco2_per_kg > 0."
+
+# --- Bounding variants (not used in the baseline results) --------------------
+midstream_capital_share:
+  dist: fixed
+  value: 0.70
+  unit: share of the pipeline tariff and of the distance-independent ammonia cost
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION for the midstream bounding variant (manuscript Section 4.4): share of the midstream cost that is capital recovery and is assumed to move with the exporter's WACC. Upper bound, because import-side cracking and the European pipeline sections are financed outside the exporting country."
+
+midstream_life_yr:
+  dist: fixed
+  value: 30
+  unit: yr
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION for the midstream bounding variant: economic life of pipelines, synthesis plants, tanks and crackers."
+
+fuel_value_adder_usd_per_kg:
+  dist: fixed
+  value: 1.0
+  unit: USD/kg H2
+  source: AUTHOR
+  basis: "AUTHOR ASSUMPTION for the fuel-valuation variant: the cargo burnt or boiled off is ammonia, which has also borne synthesis and storage costs; the variant values it at the production cost plus this amount."

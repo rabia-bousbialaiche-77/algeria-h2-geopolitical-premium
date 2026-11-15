@@ -9,7 +9,12 @@ Design (manuscript Sections 3.3-3.7):
   scenario's inverse CDF. ``independent=True`` draws them independently
   (dependence sensitivity).
 * Channel contributions are accounting (two-factor Shapley) decompositions of
-  the deterministic cost model, not causal estimates.
+  the deterministic cost model, not causal estimates. The split is exact; where
+  financing and insurance interact (a longer rerouted voyage burns cargo that
+  the financing shock has made dearer) the interaction is shared equally.
+* The PV yield factor is one draw applied to all exporters (common random
+  numbers). ``independent_yield=True`` draws one factor per site from a
+  separate random stream, leaving every other draw unchanged.
 """
 from __future__ import annotations
 
@@ -88,21 +93,28 @@ def tail_stats(x, alpha=0.95) -> dict:
 class Model:
     """Evaluates delivered costs for every exporter, mode and shock set."""
 
-    def __init__(self, p: dict, ccfg: dict, wacc_ref, betas: dict, oman_port: str = "Duqm"):
+    def __init__(self, p: dict, ccfg: dict, wacc_ref, betas: dict, oman_port: str = "Duqm",
+                 midstream: bool = False, fuel_adder: float = 0.0, yield_factors: dict | None = None):
         self.p, self.ccfg, self.betas = p, ccfg, betas
+        self.midstream, self.fuel_adder = midstream, fuel_adder
         self.c = {k: dict(v) for k, v in ccfg["countries"].items()}
         if oman_port == "Sohar":
             self.c["Oman"]["routes"] = ccfg["oman_sohar_variant"]["routes"]
         self.debt = float(ccfg["debt_share"])
         self.wacc = {k: country_wacc(v, wacc_ref, self.debt) for k, v in self.c.items()}
-        self.yld = {k: v["pv_yield_kwh_per_kwp_yr"] * p["pv_yield_factor"] for k, v in self.c.items()}
+        yf = yield_factors or {}
+        self.yld = {k: v["pv_yield_kwh_per_kwp_yr"] * yf.get(k, p["pv_yield_factor"]) for k, v in self.c.items()}
 
     def cost(self, country: str, mode: str, w_dz, ap: dict) -> dict:
-        wacc = self.wacc[country] + self.betas[country] * np.asarray(w_dz) / 100.0
-        return cm.delivered_cost(self.p, wacc, self.yld[country], mode, ap, self.c[country]["routes"])
+        """Delivered cost with Algeria's WACC uplift ``w_dz`` (pp) scaled by the exporter's beta.
 
-    def cost_fixed_wacc(self, country: str, mode: str, wacc, yld, ap: dict) -> dict:
-        return cm.delivered_cost(self.p, wacc, yld, mode, ap, self.c[country]["routes"])
+        The exporter's baseline WACC is passed as ``wacc_base`` so that the
+        reference voyage of Eq. (4) is valued at the baseline production cost.
+        """
+        base = self.wacc[country]
+        wacc = base + self.betas[country] * np.asarray(w_dz) / 100.0
+        return cm.delivered_cost(self.p, wacc, self.yld[country], mode, ap, self.c[country]["routes"],
+                                 wacc_base=base, midstream=self.midstream, fuel_adder=self.fuel_adder)
 
 
 def units(country: str) -> list[str]:
@@ -116,8 +128,38 @@ def shapley_two(f00, fw0, f0a, fwa):
     return d_fin, d_ins
 
 
+def central_decomposition(prod_cfg: dict, ccfg: dict, scen_cfg: dict) -> dict:
+    """Algerian production cost at the central (modal) parameters, by component,
+    at the baseline WACC and after the S3 uplift; used for the worked example in
+    Section 3.3 and for the hybrid-supply bound in Section 5.3."""
+    from .params import central
+    p = {k: np.array([central(v)]) for k, v in prod_cfg.items()}
+    dz = ccfg["countries"]["Algeria"]
+    debt = float(ccfg["debt_share"])
+    w0 = float(ccfg["wacc_ref"]["mode"]) + debt * dz["default_spread"] + (1 - debt) * dz["crp"]
+    y = np.array([float(dz["pv_yield_kwh_per_kwp_yr"])])
+    out = {"wacc_central": w0, "full_load_hours": float(cm.full_load_hours(p, y)[0]),
+           "usable_yield": float(cm.usable_yield(p, y)[0]),
+           "pipeline_transport": float(cm.transport_pipeline(p)[0]),
+           "h2_cargo_kt": float(cm.h2_cargo_kg(p)[0] / 1e6),
+           "insurance_per_1pct_ap": float(cm.insurance_cost(p, {"a": 0.01}, ["a"])[0])}
+    for label, w in (("wacc_8pct", 0.08), ("wacc_11pct", 0.11), ("central", w0),
+                     ("central_plus_S3", w0 + float(scen_cfg["scenarios"]["S3"]["wacc_uplift_pp"]) / 100.0)):
+        tot, d = cm.lcoh_production(p, np.array([w]), y, detail=True)
+        out[label] = {"wacc": w, "total": float(tot[0]), **{k: float(v[0]) for k, v in d.items()}}
+    d_el = out["central_plus_S3"]["electrolyser"] - out["central"]["electrolyser"]
+    d_pv = out["central_plus_S3"]["electricity"] - out["central"]["electricity"]
+    hyb = {}
+    for flh in (4500.0, 5000.0, 6000.0):
+        hyb[str(int(flh))] = d_el * out["full_load_hours"] / flh + d_pv
+    out["S3_premium_parts"] = {"electrolyser": d_el, "electricity": d_pv, "total": d_el + d_pv,
+                               "with_hybrid_full_load_hours": hyb}
+    return out
+
+
 def run(n: int = 10_000, seed: int = 20251113, independent: bool = False, beta_rule: str | None = None,
-        oman_port: str = "Duqm", algeria_beta: float = 1.0, keep_draws: bool = False) -> dict:
+        oman_port: str = "Duqm", algeria_beta: float = 1.0, keep_draws: bool = False,
+        midstream: bool = False, fuel_adder: bool = False, independent_yield: bool = False) -> dict:
     rng = np.random.default_rng(seed)
     prod_cfg = load_production()
     scen_cfg = load_yaml("scenarios.yaml")
@@ -129,11 +171,20 @@ def run(n: int = 10_000, seed: int = 20251113, independent: bool = False, beta_r
     rule = beta_rule or ccfg.get("beta_rule", "spread_proportional")
     betas = country_betas(ccfg["countries"], rule, ccfg.get("beta_alternative"))
     betas["Algeria"] = float(algeria_beta)
-    M = Model(p, ccfg, wacc_ref, betas, oman_port=oman_port)
+    yf = None
+    if independent_yield:
+        spec = prod_cfg["pv_yield_factor"]
+        rng_y = np.random.default_rng([seed, 1])          # separate stream: other draws stay the same
+        yf = {k: rng_y.triangular(float(spec["low"]), float(spec["mode"]), float(spec["high"]), size=n)
+              for k in ccfg["countries"]}
+    adder = float(prod_cfg["fuel_value_adder_usd_per_kg"]["value"]) if fuel_adder else 0.0
+    M = Model(p, ccfg, wacc_ref, betas, oman_port=oman_port, midstream=midstream, fuel_adder=adder, yield_factors=yf)
     s0 = shocks["S0"]
 
     res = {"n": n, "seed": seed, "independent": independent, "beta_rule": rule, "oman_port": oman_port,
-           "algeria_beta": float(algeria_beta),
+           "algeria_beta": float(algeria_beta), "midstream": midstream, "fuel_adder": adder,
+           "independent_yield": independent_yield,
+           "central": central_decomposition(prod_cfg, ccfg, scen_cfg),
            "betas": betas, "wacc": {k: tail_stats(v) for k, v in M.wacc.items()},
            "pv_yield": {k: float(np.mean(v)) for k, v in M.yld.items()},
            "costs": {}, "grp": {}, "delta": {}, "draws": {}}
@@ -161,6 +212,9 @@ def run(n: int = 10_000, seed: int = 20251113, independent: bool = False, beta_r
                     "grp": tail_stats(grp), "pct_of_S0_mean": float(grp.mean() / f00["total"].mean()),
                     "financing": float(d_fin.mean()), "insurance": float(d_ins.mean()),
                     "financing_share": float(d_fin.mean() / grp.mean()) if abs(grp.mean()) > 1e-12 else None,
+                    # interaction = part of the GRP that is neither financing alone nor insurance alone
+                    "interaction": float((fwa["total"] - fw0["total"] - f0a["total"] + f00["total"]).mean()),
+                    "financing_p50": float(np.median(d_fin)), "insurance_p50": float(np.median(d_ins)),
                 }
 
     # Competitor gaps, decomposition, security premium --------------------------
